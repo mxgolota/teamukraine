@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+
+<table class="table table-striped table-bordered">
+    <thead>
+    <tr>
+        <td>Username</td>
+        <td>Daily</td>
+        <td>Daily 960</td>
+        <td>Bullet</td>
+        <td>Blitz</td>
+        <td>Rapid</td>
+    </tr>
+    </thead>
+    {% for player in players %}
+    <tr>
+        <td><a href="{{ player['url'] }}">{{ player['username'] }}</a></td>
+        <td>{{ player['chess_daily_rating'] }}</td>
+        <td>{{ player['chess960_daily_rating'] }}</td>
+        <td>{{ player['chess_bullet_rating'] }}</td>
+        <td>{{ player['chess_blitz_rating'] }}</td>
+        <td>{{ player['chess_rapid_rating'] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+{% endblock %}
+
+
