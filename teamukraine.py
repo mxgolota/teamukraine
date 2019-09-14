@@ -71,19 +71,18 @@ def lcwl_u1600():
             result.append(dict(zip(recordset.column_names, row)))
     cursor.close()
 
-    tmp = pd.DataFrame(result)
-    tmp = pd.pivot_table(tmp, columns='club_2', index='player_1', values='team1_player_score')\
-        .reset_index()\
-        .rename_axis(None, axis=1)
-    # tmp.set_index('player_1', inplace=True)
-    # tmp.reset_index(inplace=True)
-    #tmp.reset_index(inplace=True)
-    #tmp.columns = tmp.columns.get_level_values(0)
-    tmp['Total'] = tmp[list(tmp.columns[1:])].sum(axis=1)
-    rivals = tmp.columns[1:]
-    tmp = tmp.sort_values(by=['Total'], ascending=False)
+    points = pd.DataFrame(result)
+    points = pd.pivot_table(points, columns=['club_2', 'round_id'], index=['player_1', 'chess_blitz_rating'], values='team1_player_score') \
+        .reset_index()
+    cols = [('player_1', ''), ('chess_blitz_rating', '')] + sorted(list(points.columns)[2:], key=lambda x: x[1])
+    points = points.reindex(columns=cols).reset_index(drop=True)
 
-    return render_template("lcwl_best_players.html", tmp=tmp, rivals=rivals)
+    points['Total'] = points[list(points.columns[2:])].sum(axis=1)
+    rivals = points.columns[2:]
+    points = points.sort_values(by=['Total'], ascending=False)
+    points['Place'] = np.arange(1, len(points) + 1)
+
+    return render_template("lcwl_best_players.html", points=points, rivals=rivals)
 
 
 @app.route("/tournaments/lcwl_main")
@@ -97,19 +96,19 @@ def lcwl_main():
             result.append(dict(zip(recordset.column_names, row)))
     cursor.close()
 
-    tmp = pd.DataFrame(result)
-    tmp = pd.pivot_table(tmp, columns='club_2', index='player_1', values='team1_player_score')\
-        .reset_index()\
-        .rename_axis(None, axis=1)
-    # tmp.set_index('player_1', inplace=True)
-    # tmp.reset_index(inplace=True)
-    #tmp.reset_index(inplace=True)
-    #tmp.columns = tmp.columns.get_level_values(0)
-    tmp['Total'] = tmp[list(tmp.columns[1:])].sum(axis=1)
-    rivals = tmp.columns[1:]
-    tmp = tmp.sort_values(by=['Total'], ascending=False)
+    points = pd.DataFrame(result)
+    points = pd.pivot_table(points, columns=['club_2', 'round_id'], index=['player_1', 'chess_blitz_rating'],
+                            values='team1_player_score') \
+        .reset_index()
+    cols = [('player_1', ''), ('chess_blitz_rating', '')] + sorted(list(points.columns)[2:], key=lambda x: x[1])
+    points = points.reindex(columns=cols).reset_index(drop=True)
 
-    return render_template("lcwl_best_players.html", tmp=tmp, rivals=rivals)
+    points['Total'] = points[list(points.columns[2:])].sum(axis=1)
+    rivals = points.columns[2:]
+    points = points.sort_values(by=['Total'], ascending=False)
+    points['Place'] = np.arange(1, len(points) + 1)
+
+    return render_template("lcwl_best_players.html", points=points, rivals=rivals)
 
 if __name__ == "__main__":
     #app.run(host='0.0.0.0')
