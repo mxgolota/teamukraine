@@ -52,9 +52,12 @@
                   		<a class="dropdown-item" href = "{{ url_for('club' ,club_id=71728) }}">Team Makeevka</a>
 					</div>
 				</li>
-				<li class="nav-item">
-					<a href="{{ url_for('players') }}" class="nav-link">Гравці</a>
-        		</div>
+				<li class="nav-item dropdown">
+					<a href="{{ url_for('teams') }}" class="nav-link dropdown-toggle" data-toggle="dropdown">Турніри</a>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" href = "{{ url_for('lcwl_main') }}">LCWL (кращі гравці)</a>
+                  		<a class="dropdown-item" href = "{{ url_for('lcwl_u1600') }}">LCWL U1600 (кращі гравці)</a>
+					</div>
 				</li>
 			</ul>
 		</div>
