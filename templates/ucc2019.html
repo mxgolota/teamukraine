@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>UCC 2019</h2>
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active"
+       id="tournamenttable-tab"
+       data-toggle="tab"
+       href="#tournamenttable"
+       role="tab"
+       aria-controls="tournamenttable"
+       aria-selected="true">Турнірна таблиця</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="rounds-tab" data-toggle="tab" href="#rounds" role="tab" aria-controls="rounds" aria-selected="false">Раунди</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Кращі гравці</a>
+  </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="tournamenttable" role="tabpanel" aria-labelledby="tournamenttable-tab">
+      1
+  </div>
+  <div class="tab-pane fade" id="rounds" role="tabpanel" aria-labelledby="rounds-tab">
+      {% for i in range(1, rounds['round_id'].max()+1) %}
+      <h4>Раунд {{ i }}</h4>
+      <table class="align-middle text-center table table-striped table-bordered table-hover">
+          <tr>
+              <td class="border border-secondary">Команда #1</td>
+              <td class="border border-secondary">Результат</td>
+              <td class="border border-secondary">Команда #2</td>
+          </tr>
+      {% for index, round in (rounds.loc[rounds['round_id'] == i]).iterrows(): %}
+          <tr>
+              <td class="align-middle border border-secondary" style="width: 40%">
+                  <span><a href="{{ url_for('club' ,club_id=round['team1_id']) }}">{{ round['team1_name'] }}</a></span>
+                  <img style="max-width:30px;" src="/static/{{ round['team1_id'] }}.png">
+              </td>
+              <td class="align-middle border border-secondary style="width: 10%">
+              <span class="font-weight-bold {% if round['team1_result'] == 1.0 %} text-success {% elif round['team1_result'] == 0.0 %} text-danger {% elif round['team1_result'] == 0.5 %} text-warning {% endif %}"">
+                  {% if round['team1_score']|string != 'nan' and round['team1_score']|string != 'None' %}
+                  {{ round['team1_score'] }}
+                  {% elif round['team1_result'] == 1.0 %} W
+                  {% elif round['team1_result'] == 0.5 %} D
+                  {% elif round['team1_result'] == 0.0 %} L
+                  {% else %} {% endif %}
+               </span>
+                  -
+              <span class="font-weight-bold {% if round['team2_result'] == 1.0 %} text-success {% elif round['team2_result'] == 0.0 %} text-danger {% elif round['team2_result'] == 0.5 %} text-warning {% endif %}"">
+                  {% if round['team2_score']|string != 'nan' and round['team2_score']|string != 'None' %}
+                  {{ round['team2_score'] }}
+                  {% elif round['team2_result'] == 1.0 %} W
+                  {% elif round['team2_result'] == 0.5 %} D
+                  {% elif round['team2_result'] == 0.0 %} L
+                  {% else %} {% endif %}
+              </span>
+              </td>
+              <td class="align-middle border border-secondary" style="width: 40%">
+                  <span><a href="{{ url_for('club' ,club_id=round['team2_id']) }}">{{ round['team2_name'] }}</a></span>
+                  <img style="max-width:30px;" src="/static/{{ round['team2_id'] }}.png">
+              </td>
+          </tr>
+      {% endfor %}
+      </table>
+      {% endfor %}
+
+  </div>
+  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+      <table class="table table-striped table-bordered">
+        <thead>
+        <tr>
+            <td class="border border-secondary">#</td>
+            <td class="border border-secondary">Гравець</td>
+            <td class="border border-secondary">Команда</td>
+            <td class="border border-secondary">Кількість очків</td>
+            <td class="border border-secondary">Максимально можливі очки</td>
+            <td class="border border-secondary">% набраних очків</td>
+        </tr>
+       </thead>
+          <tbody>
+          {% for index, player in best_players.iterrows(): %}
+          <tr>
+            <td class="border border-secondary">{{ index+1 }}</td>
+            <td class="border border-secondary"><a href="{{ player['url'] }}">{{ player['username'] }}</a></td>
+            <td class="border border-secondary"><a href="{{ url_for('club' ,club_id=player['team_id']) }}">{{ player['teamname'] }}</a> <img style="max-width:30px;" src="/static/{{ player['team_id'] }}.png"></td>
+            <td class="border border-secondary">{{ player['player_score'] }}</td>
+            <td class="border border-secondary">{{ player['max_possible_score'] }}</td>
+            <td class="border border-secondary">{{ "{:.2%}".format(player['player_score']/player['max_possible_score']) }}</td>
+        </tr>
+          {% endfor %}
+          </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+
+

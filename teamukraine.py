@@ -110,6 +110,29 @@ def lcwl_main():
 
     return render_template("lcwl_best_players.html", points=points, rivals=rivals)
 
+@app.route("/tournaments/ucc2019")
+def ucc2019():
+    conn = MySQLConnection(**dbconfig)
+    cursor = conn.cursor()
+
+    cursor.callproc("usp_stat_ucc2019_best_players")
+    best_players_result = []
+    for recordset in cursor.stored_results():
+        for row in recordset:
+            best_players_result.append(dict(zip(recordset.column_names, row)))
+
+    cursor.callproc("usp_stat_ucc2019_rounds")
+    rounds_result = []
+    for recordset in cursor.stored_results():
+        for row in recordset:
+            rounds_result.append(dict(zip(recordset.column_names, row)))
+
+    cursor.close()
+
+    best_players = pd.DataFrame(best_players_result)
+    rounds = pd.DataFrame(rounds_result)
+    return render_template("ucc2019.html", best_players=best_players, rounds=rounds)
+
 if __name__ == "__main__":
     #app.run(host='0.0.0.0')
     app.run(debug=True)
