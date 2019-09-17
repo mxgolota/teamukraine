@@ -131,7 +131,17 @@ def ucc2019():
 
     best_players = pd.DataFrame(best_players_result)
     rounds = pd.DataFrame(rounds_result)
-    return render_template("ucc2019.html", best_players=best_players, rounds=rounds)
+    first_teams = rounds[['round_id', 'match_id', 'team1_name', 'team1_result', 'team2_name']]
+    first_teams = first_teams.rename(columns={"team1_name": "team_name", "team1_result": "team_result", "team2_name": "opponent_name"})
+    second_teams = rounds[['round_id', 'match_id', 'team2_name', 'team2_result', 'team1_name']]
+    second_teams = second_teams.rename(columns={"team2_name": "team_name", "team2_result": "team_result", "team1_name": "opponent_name"})
+    tournament_table = pd.concat([first_teams, second_teams]).reset_index()
+
+    tournament_table = pd.crosstab(tournament_table.team_name, tournament_table.opponent_name, aggfunc="sum", values=tournament_table.team_result)
+    tournament_table['Загалом'] = tournament_table.sum(axis=1)
+    tournament_table.reset_index(inplace=True)
+
+    return render_template("ucc2019.html", best_players=best_players, rounds=rounds, tournament_table=tournament_table)
 
 if __name__ == "__main__":
     #app.run(host='0.0.0.0')
