@@ -26,7 +26,7 @@
           <thead class="table-active">
           <tr>
               <td class="border border-secondary"></td>
-          {% for column in tournament_table.columns[1:] %}
+          {% for column in tournament_table.columns[2:] %}
               <td class="border border-secondary">{{ column }}</td>
           {% endfor %}
           </tr>
@@ -34,11 +34,13 @@
           <tbody>
           {% for index, row in tournament_table.iterrows(): %}
           <tr>
-              {% for column in tournament_table.columns %}
+              {% for column in tournament_table.columns[1:] %}
               {% if row[column]|string != 'nan' %}
               <td class="border border-secondary">{{ row[column] }}</td>
-              {% else %}
+              {% elif row[1] == column %}
               <td class="border border-secondary"> X </td>
+              {% else %}
+              <td class="border border-secondary"> - </td>
               {% endif %}
               {% endfor %}
           {% endfor %}

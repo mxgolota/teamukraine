@@ -137,7 +137,8 @@ def ucc2019():
     second_teams = second_teams.rename(columns={"team2_name": "team_name", "team2_result": "team_result", "team1_name": "opponent_name"})
     tournament_table = pd.concat([first_teams, second_teams]).reset_index()
 
-    tournament_table = pd.crosstab(tournament_table.team_name, tournament_table.opponent_name, aggfunc="sum", values=tournament_table.team_result)
+    tournament_table = pd.pivot_table(tournament_table, columns=['opponent_name'], index=['team_name'], values='team_result').reset_index()
+
     tournament_table['Загалом'] = tournament_table.sum(axis=1)
     tournament_table.reset_index(inplace=True)
 
