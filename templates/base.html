@@ -37,7 +37,7 @@
 					<a href= "{{ url_for('index') }}" class="nav-link">Головна</a>
 				</li>
 				<li class="nav-item dropdown">
-					<a href="{{ url_for('teams') }}" class="nav-link dropdown-toggle" data-toggle="dropdown">Клуби</a>
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Клуби</a>
 					<div class="dropdown-menu">
 						<a class="dropdown-item" href = "{{ url_for('club' ,club_id=4339) }}">Team Ukraine</a>
                   		<a class="dropdown-item" href = "{{ url_for('club' ,club_id=69208) }}">Ukraine love chess</a>
@@ -53,21 +53,42 @@
 					</div>
 				</li>
 				<li class="nav-item dropdown">
-					<a href="{{ url_for('teams') }}" class="nav-link dropdown-toggle" data-toggle="dropdown">Турніри</a>
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Турніри</a>
 					<div class="dropdown-menu">
 						<a class="dropdown-item" href = "{{ url_for('lcwl_main') }}">LCWL (кращі гравці)</a>
                   		<a class="dropdown-item" href = "{{ url_for('lcwl_u1600') }}">LCWL U1600 (кращі гравці)</a>
 						<a class="dropdown-item" href = "{{ url_for('ucc2019') }}">UCC 2019</a>
 					</div>
 				</li>
-			</ul>
+				</ul>
+				<ul class="navbar-nav">
+				{% if current_user.is_authenticated %}
+				<li class="nav-item dropdown">
+					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+						<img src={{ current_user.info.avatar or "https://via.placeholder.com/30/000000/FFFFFF/?text=^_^" }} height='30px' class="rounded-circle">
+						Профіль
+					</a>
+					<div class="dropdown-menu">
+                  		<a class="dropdown-item" href = "{{ url_for('profile') }}">Профіль</a>
+						<a class="dropdown-item" href = "{{ url_for('logout') }}">Вихід</a>
+					</div>
+				</li>
+				{% else %}
+				<li class="nav-item">
+					<a href= "{{ url_for('register') }}" class="nav-link">Реєстрація</a>
+				</li>
+				<li class="nav-item">
+					<a href= "{{ url_for('login') }}" class="nav-link">Логін</a>
+				</li>
+				{% endif %}
+				</ul>
 		</div>
 	</nav>
 	<!-- Top menu -->
 
 	<!--Content -->
-
 	<div class="container-fluid">
+		{% include '/helpers/_messages.html' %}
 		{% block content %}
       	{% endblock %}
 	</div>

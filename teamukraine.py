@@ -1,31 +1,60 @@
-from flask import Flask, render_template
-from mysql.connector import MySQLConnection, Error
-from python_mysql_dbconfig import read_db_config
+from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
+from forms import RegisterForm, LoginForm
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import relationship
+from werkzeug.security import generate_password_hash, check_password_hash
 import pandas as pd
 import numpy as np
+import uuid
+import requests as r
+import json
+
 
 app = Flask(__name__)
-dbconfig = read_db_config()
+app.config.from_object('config.Config')
+db = SQLAlchemy(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+
+class User(UserMixin, db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    username = db.Column(db.String, db.ForeignKey('players.username'))
+    password = db.Column(db.String)
+
+    info = db.relationship('UserExtended')
+
+
+class UserExtended(db.Model):
+    __tablename__ = 'players'
+    username = db.Column(db.String, primary_key=True)
+    url = db.Column(db.String)
+    avatar = db.Column(db.String)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
 
 @app.route("/")
 def index():
-    conn = MySQLConnection(**dbconfig)
+    conn = db.engine.raw_connection()
     cursor = conn.cursor()
     cursor.callproc("usp_stat_clubs_players_cnt")
     clubs_players_cnt = []
     for result in cursor.stored_results():
         for mid in result.fetchall():
             clubs_players_cnt.append(mid)
-    cursor.close()
+    conn.close()
     return render_template("index.html", clubs_players_cnt=clubs_players_cnt)
 
-@app.route("/teams")
-def teams():
-    return "Ololo!"
 
 @app.route("/teams/<int:club_id>")
 def club(club_id):
-    conn = MySQLConnection(**dbconfig)
+    conn = db.engine.raw_connection()
     info = conn.cursor()
     info.callproc("usp_club_info", [club_id])
     club_info = []
@@ -49,7 +78,7 @@ def club(club_id):
 
 @app.route("/players")
 def players():
-    conn = MySQLConnection(**dbconfig)
+    conn = db.engine.raw_connection()
     cursor = conn.cursor()
     cursor.callproc("usp_players_search")
     result = []
@@ -62,7 +91,7 @@ def players():
 
 @app.route("/tournaments/lcwl_u1600")
 def lcwl_u1600():
-    conn = MySQLConnection(**dbconfig)
+    conn = db.engine.raw_connection()
     cursor = conn.cursor()
     cursor.callproc("usp_stat_lcwl_u1600")
     result = []
@@ -87,7 +116,7 @@ def lcwl_u1600():
 
 @app.route("/tournaments/lcwl_main")
 def lcwl_main():
-    conn = MySQLConnection(**dbconfig)
+    conn = db.engine.raw_connection()
     cursor = conn.cursor()
     cursor.callproc("usp_stat_lcwl_main")
     result = []
@@ -110,9 +139,11 @@ def lcwl_main():
 
     return render_template("lcwl_best_players.html", points=points, rivals=rivals)
 
+
 @app.route("/tournaments/ucc2019")
+@login_required
 def ucc2019():
-    conn = MySQLConnection(**dbconfig)
+    conn = db.engine.raw_connection()
     cursor = conn.cursor()
 
     cursor.callproc("usp_stat_ucc2019_best_players")
@@ -143,6 +174,72 @@ def ucc2019():
     tournament_table.reset_index(inplace=True)
 
     return render_template("ucc2019.html", best_players=best_players, rounds=rounds, tournament_table=tournament_table)
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm(request.form)
+    print(request.method)
+    if request.method == 'GET':
+        form.secret_key.data = str(uuid.uuid4())
+
+    if request.method == 'POST' and form.validate():
+        username = form.username.data
+        password = generate_password_hash(form.password.data, method='sha256')
+        secret_key = form.secret_key.data
+
+        if User.query.filter_by(username=form.username.data).first() is not None:
+            flash('Цей користувач вже зареєстрований', category='danger')
+            return redirect(url_for('register'))
+
+        player_location = json.loads(r.get('https://api.chess.com/pub/player/{}'.format(username)).text)
+        if 'location' not in player_location:
+            flash('Такого користувача не існує на chess.com', category='danger')
+            return redirect(url_for('register'))
+        if player_location['location'] != secret_key:
+            flash('Не співпадає секретний ключ', category='danger')
+            return redirect(url_for('register'))
+
+        user = User(username=username, password=password)
+        db.session.add(user)
+        db.session.commit()
+
+        flash('Ви усішно зареєстровані!', category='success')
+        return redirect(url_for('index'))
+
+    return render_template('register.html', form=form)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm(request.form)
+    if request.method == 'POST':
+
+        user = User.query.filter_by(username=form.username.data).first()
+
+        if user and check_password_hash(user.password, form.password.data):
+            login_user(user)
+            flash('Привіт!', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Неправильний логін або пароль', 'danger')
+    return render_template('login.html', form=form)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('До зустрічі!', 'success')
+    return redirect(url_for('index'))
+
+
+@app.route('/profile')
+@login_required
+def profile():
+    user = User.query.filter_by(username=current_user.username).first()
+    return render_template('profile.html', user=user)
+
 
 if __name__ == "__main__":
     #app.run(host='0.0.0.0')

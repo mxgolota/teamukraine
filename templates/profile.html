@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row my-2">
+        <div class="col-lg-10 order-lg-2">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a href="" data-target="#profile" data-toggle="tab" class="nav-link active">Профіль</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" data-target="#edit" data-toggle="tab" class="nav-link">Редагувати</a>
+                </li>
+            </ul>
+            <div class="tab-content py-4">
+                <div class="tab-pane active" id="profile">
+                        В розробці
+                    <!--/row-->
+                </div>
+                <div class="tab-pane" id="edit">
+                    В розробці
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 order-lg-1 text-center">
+            <img src="{{ user.info.avatar or "https://via.placeholder.com/150/000000/FFFFFF/?text=^_^" }}" class="mx-auto img-fluid img-circle d-block" alt="avatar">
+        </div>
+    </div>
+</div>
+{% endblock %}

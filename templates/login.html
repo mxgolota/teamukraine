@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% from "helpers/_formhelpers.html" import render_field %}
+
+{% block content %}
+<div class="row d-flex justify-content-center">
+        <div class="col-lg-6 py-4">
+          <h2>Логін</h2>
+
+          <div class="alert alert-secondary" role="alert">
+                Для того щоб увійти на сайт, введіть будь-ласка логін та пароль.
+            </div>
+
+  <form action="" method="POST">
+    <div class="form-group">
+      {{ render_field(form.username, class_="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ render_field(form.password, class_="form-control") }}
+    </div>
+    <button type="submit" class="btn btn-primary">Логін</button>
+  </form>
+        </div>
+</div>
+{% endblock %}
