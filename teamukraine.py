@@ -141,7 +141,6 @@ def lcwl_main():
 
 
 @app.route("/tournaments/ucc2019")
-@login_required
 def ucc2019():
     conn = db.engine.raw_connection()
     cursor = conn.cursor()
