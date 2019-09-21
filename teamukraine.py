@@ -171,6 +171,7 @@ def ucc2019():
 
     tournament_table['Загалом'] = tournament_table.sum(axis=1)
     tournament_table.reset_index(inplace=True)
+    tournament_table.sort_values(by=['Загалом'], ascending=False, inplace=True)
 
     return render_template("ucc2019.html", best_players=best_players, rounds=rounds, tournament_table=tournament_table)
 
