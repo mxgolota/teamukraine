@@ -2,31 +2,32 @@
 {% block content %}
 
 
-<h3>Найближчі події</h3>
-<div class="row">
-{% for i in range(((last_events|length)/3)|round(0,'ceil')|int) %}
-  <div class="col-12">
-   <div class="card-deck">
-{% for event in last_events[3*i:3*i+3] %}
-  <div class="card">
-      {% if event['event_picture'] is not none: %}
-    <img src="/static/events/{{ event['event_picture'] }}" class="card-img-top">
-      {% endif %}
-    <div class="card-body">
-      <h5 class="card-title">{{ event['event_name'] }}</h5>
-      <p class="card-text">{{ event['event_description'] | safe }}</p>
-        <a class="btn btn-dark" href="{{ url_for('submit_event_action', event_id=event.event_id) }}">
-        <i class="fa fa-check"></i> Відвідати
-        <span class="badge badge-light">{{ event.submits.count() }}</span>
-      </a>
-      <!--<p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>-->
+<div class="container">
+    <h3 class="text-center">Найближчі події</h3>
+    <div class="row">
+        {% for event in last_events %}
+        <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+            <div class="card">
+                {% if event['event_picture'] is not none: %}
+                <img src="/static/events/{{ event['event_picture'] }}" class="card-img-top">
+                {% endif %}
+                <div class="card-block m-3">
+                    <h4 class="card-title">{{ event['event_name'] }}</h4>
+                    <p class="card-text">{{ event['event_description'] | safe }}</p>
+                    <a class="btn btn-dark" href="{{ url_for('submit_event_action', event_id=event.event_id) }}">
+                        <i class="fa fa-check"></i> Відвідати
+                        <span class="badge badge-light">{{ event.submits.count() }}</span>
+                    </a>
+                    <!--<p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>-->
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
     </div>
-  </div>
-{% endfor %}
-      </div>
-    </div>
-   {% endfor %}
+
 </div>
+
 
 
 {% endblock %}
