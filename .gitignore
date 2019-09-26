@@ -123,6 +123,7 @@ dmypy.json
 #smth
 .idea
 config.ini
+static/events
 
 # Pyre type checker
 .pyre/

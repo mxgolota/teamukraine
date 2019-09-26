@@ -1,107 +1,74 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
 from forms import RegisterForm, LoginForm
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import relationship
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import pandas as pd
 import numpy as np
 import uuid
 import requests as r
 import json
+from models import User, UserExtended, Events, Event_User
+from database import db_session, engine
 
 
 app = Flask(__name__)
 app.config.from_object('config.Config')
-db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 
-class User(UserMixin, db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    username = db.Column(db.String, db.ForeignKey('players.username'))
-    password = db.Column(db.String)
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db_session.remove()
 
-    info = db.relationship('UserExtended')
-
-
-class UserExtended(db.Model):
-    __tablename__ = 'players'
-    username = db.Column(db.String, primary_key=True)
-    url = db.Column(db.String)
-    avatar = db.Column(db.String)
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    user = User.query.get(int(user_id))
+    return user
 
 
 @app.route("/")
 def index():
-    conn = db.engine.raw_connection()
-    cursor = conn.cursor()
-    cursor.callproc("usp_stat_clubs_players_cnt")
-    clubs_players_cnt = []
-    for result in cursor.stored_results():
-        for mid in result.fetchall():
-            clubs_players_cnt.append(mid)
-    conn.close()
-    return render_template("index.html", clubs_players_cnt=clubs_players_cnt)
+    last_events = Events.query.limit(5).all()
+    return render_template("index.html", last_events=last_events)
 
 
 @app.route("/teams/<int:club_id>")
 def club(club_id):
-    conn = db.engine.raw_connection()
-    info = conn.cursor()
-    info.callproc("usp_club_info", [club_id])
-    club_info = []
-    for recordset in info.stored_results():
-        for row in recordset:
-            club_info.append(dict(zip(recordset.column_names, row)))
-    info.close()
+    with engine.connect() as conn:
+        result = conn.execute("call usp_club_info(%s)", ([club_id]))
+        club_info = [row for row in result]
 
-    matches = conn.cursor()
-    matches.callproc("usp_club_matches", [club_id])
-    club_matches = []
-    for recordset in matches.stored_results():
-        for row in recordset:
-            club_matches.append(dict(zip(recordset.column_names, row)))
-        matches.close()
+    with engine.connect() as conn:
+        result = conn.execute("call usp_club_matches(%s)", ([club_id]))
+        club_matches = [row for row in result]
+
     return render_template("club.html",
                            club_id=club_id,
                            club_info=club_info[0],
                            club_matches_reg=[x for x in club_matches if x['status'] == 'registration'],
-                           club_matches_prog = [x for x in club_matches if x['status'] == 'in_progress'])
+                           club_matches_prog=[x for x in club_matches if x['status'] == 'in_progress'])
 
 @app.route("/players")
 def players():
-    conn = db.engine.raw_connection()
-    cursor = conn.cursor()
-    cursor.callproc("usp_players_search")
-    result = []
-    for recordset in cursor.stored_results():
-        for row in recordset:
-            result.append(dict(zip(recordset.column_names, row)))
-    cursor.close()
-    return render_template("players.html", players=result)
+    with engine.connect() as conn:
+        result = conn.execute("call usp_players_search")
+        players = [row for row in result]
+    return render_template("players.html", players=players)
 
 
 @app.route("/tournaments/lcwl_u1600")
 def lcwl_u1600():
-    conn = db.engine.raw_connection()
-    cursor = conn.cursor()
-    cursor.callproc("usp_stat_lcwl_u1600")
-    result = []
-    for recordset in cursor.stored_results():
-        for row in recordset:
-            result.append(dict(zip(recordset.column_names, row)))
-    cursor.close()
+    with engine.connect() as conn:
+        tmp = conn.execute("call usp_stat_lcwl_u1600")
+        result = [row for row in tmp]
+        columns = tmp.keys()
 
-    points = pd.DataFrame(result)
-    points = pd.pivot_table(points, columns=['club_2', 'round_id'], index=['player_1', 'chess_blitz_rating'], values='team1_player_score') \
+    points = pd.DataFrame(result, columns=columns)
+    points = pd.pivot_table(points, columns=['club_2', 'round_id'], index=['player_1', 'chess_blitz_rating'],
+                            values='team1_player_score') \
         .reset_index()
     cols = [('player_1', ''), ('chess_blitz_rating', '')] + sorted(list(points.columns)[2:], key=lambda x: x[1])
     points = points.reindex(columns=cols).reset_index(drop=True)
@@ -116,16 +83,12 @@ def lcwl_u1600():
 
 @app.route("/tournaments/lcwl_main")
 def lcwl_main():
-    conn = db.engine.raw_connection()
-    cursor = conn.cursor()
-    cursor.callproc("usp_stat_lcwl_main")
-    result = []
-    for recordset in cursor.stored_results():
-        for row in recordset:
-            result.append(dict(zip(recordset.column_names, row)))
-    cursor.close()
+    with engine.connect() as conn:
+        tmp = conn.execute("call usp_stat_lcwl_main")
+        result = [row for row in tmp]
+        columns = tmp.keys()
 
-    points = pd.DataFrame(result)
+    points = pd.DataFrame(result, columns=columns)
     points = pd.pivot_table(points, columns=['club_2', 'round_id'], index=['player_1', 'chess_blitz_rating'],
                             values='team1_player_score') \
         .reset_index()
@@ -142,25 +105,18 @@ def lcwl_main():
 
 @app.route("/tournaments/ucc2019")
 def ucc2019():
-    conn = db.engine.raw_connection()
-    cursor = conn.cursor()
+    with engine.connect() as conn:
+        result = conn.execute("call usp_stat_ucc2019_best_players")
+        best_players_result = [row for row in result]
+        best_players_columns = result.keys()
 
-    cursor.callproc("usp_stat_ucc2019_best_players")
-    best_players_result = []
-    for recordset in cursor.stored_results():
-        for row in recordset:
-            best_players_result.append(dict(zip(recordset.column_names, row)))
+    with engine.connect() as conn:
+        result = conn.execute("call usp_stat_ucc2019_rounds")
+        rounds_result = [row for row in result]
+        rounds_result_columns = result.keys()
 
-    cursor.callproc("usp_stat_ucc2019_rounds")
-    rounds_result = []
-    for recordset in cursor.stored_results():
-        for row in recordset:
-            rounds_result.append(dict(zip(recordset.column_names, row)))
-
-    cursor.close()
-
-    best_players = pd.DataFrame(best_players_result)
-    rounds = pd.DataFrame(rounds_result)
+    best_players = pd.DataFrame(best_players_result, columns=best_players_columns)
+    rounds = pd.DataFrame(rounds_result,columns=rounds_result_columns)
     first_teams = rounds[['round_id', 'match_id', 'team1_name', 'team1_result', 'team2_name']]
     first_teams = first_teams.rename(columns={"team1_name": "team_name", "team1_result": "team_result", "team2_name": "opponent_name"})
     second_teams = rounds[['round_id', 'match_id', 'team2_name', 'team2_result', 'team1_name']]
@@ -179,7 +135,6 @@ def ucc2019():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm(request.form)
-    print(request.method)
     if request.method == 'GET':
         form.secret_key.data = str(uuid.uuid4())
 
@@ -201,8 +156,8 @@ def register():
             return redirect(url_for('register'))
 
         user = User(username=username, password=password)
-        db.session.add(user)
-        db.session.commit()
+        db_session.add(user)
+        db_session.commit()
 
         flash('Ви усішно зареєстровані!', category='success')
         return redirect(url_for('index'))
@@ -239,6 +194,14 @@ def logout():
 def profile():
     user = User.query.filter_by(username=current_user.username).first()
     return render_template('profile.html', user=user)
+
+
+@app.route('/submit_event/<int:event_id>/')
+@login_required
+def submit_event_action(event_id):
+    event = Events.query.filter_by(event_id=event_id).first()
+    current_user.submit_to_event(event)
+    return redirect(request.referrer)
 
 
 if __name__ == "__main__":
