@@ -9,6 +9,7 @@ import requests as r
 import json
 from models import User, UserExtended, Events, Event_User
 from database import db_session, engine
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -31,7 +32,7 @@ def load_user(user_id):
 
 @app.route("/")
 def index():
-    last_events = Events.query.limit(5).all()
+    last_events = Events.query.filter(Events.event_date >= datetime.utcnow().date()).order_by(Events.event_date)
     return render_template("index.html", last_events=last_events)
 
 

@@ -1,5 +1,5 @@
 from flask_login import UserMixin
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from database import Base, db_session
 
@@ -16,12 +16,10 @@ class User(UserMixin, Base):
     def submit_to_event(self, event):
         print(self.id, event.event_id)
         if not self.submitted_to_event(event):
-            print('add')
             submit = Event_User(user_id=self.id, event_id=event.event_id)
             db_session.add(submit)
             db_session.commit()
         else:
-            print('delete')
             Event_User.query.filter_by(user_id=self.id, event_id=event.event_id).delete()
             db_session.commit()
 
@@ -44,6 +42,7 @@ class Events(Base):
     event_short_description = Column(String)
     event_description = Column(String)
     event_picture = Column(String)
+    event_date = Column(DateTime)
     submits = relationship('Event_User', backref='chess_events', lazy='dynamic')
 
 
