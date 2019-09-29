@@ -14,7 +14,6 @@ class User(UserMixin, Base):
     info = relationship('UserExtended')
 
     def submit_to_event(self, event):
-        print(self.id, event.event_id)
         if not self.submitted_to_event(event):
             submit = Event_User(user_id=self.id, event_id=event.event_id)
             db_session.add(submit)
