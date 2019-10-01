@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    {% from "/helpers/_formhelpers.html" import render_field %}
+    <div class="row d-flex justify-content-center">
+        <div class="col-lg-6 py-4" >
+
+            <form method="Post" action="">
+                <div class="form-group">
+                    {{ render_field(update_form.event_name, class_="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ render_field(update_form.event_description, class_="form-control", id="event_description_area") }}
+                </div>
+                <div class="form-group">
+                    {{ render_field(update_form.event_date, class_="form-control") }}
+                </div>
+                <p><input type="submit" class="btn btn-primary" value="Зберегти"></p>
+            </form>
+        </div>
+    </div>
+
+<script type="text/javascript">
+    CKEDITOR.replace('event_description_area')
+</script>
+{% endblock %}

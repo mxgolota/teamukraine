@@ -16,15 +16,16 @@
                     <p class="card-text">{{ event['event_description'] | safe }}</p>
                     {% if current_user.is_authenticated and current_user.submitted_to_event(event) %}
                      <a class="btn btn-success" href="{{ url_for('submit_event_action', event_id=event.event_id) }}">
-                        <i class="fa fa-check"></i> Ви записані
+                        <img src="/static/icons/check.svg"> Ви записані
                         <span class="badge badge-light">{{ event.submits.count() }}</span>
                     </a>
                     {% else %}
                     <a class="btn btn-dark" href="{{ url_for('submit_event_action', event_id=event.event_id) }}">
-                        <i class="fa fa-check"></i> Відвідати
+                        <img src="/static/icons/check.svg"> Відвідати
                         <span class="badge badge-light">{{ event.submits.count() }}</span>
                     </a>
                     {% endif %}
+                    <a class="btn btn-light float-right" href="{{ url_for('events_bp.event', event_id=event['event_id']) }}">Детальніше</a>
                     <!--<p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>-->
                 </div>
             </div>

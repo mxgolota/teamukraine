@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div class="container">
+    <h3 class="text-center">{{ this_event.event_name }}</h3>
+
+    {% if this_event.event_picture is not none: %}
+    <p class="text-center">
+        <img src="/static/events/{{ this_event.event_picture }}">
+    </p>
+    {% endif %}
+
+    <p class="text-center">
+        {{ this_event.event_description | safe }}
+    </p>
+
+    <p class="text-center">
+        <h6 class="text-left">Підписалися:</h6>
+        {% for submit in this_event.submits %}
+        <a href="https://www.chess.com/member/{{ submit.event_user.info.username }}"><img src="{{ submit.event_user.info.avatar }}" class="rounded-circle" width="50"></a>
+        {% endfor %}
+    </p>
+
+    </div>
+</div>
+
+
+
+{% endblock %}
