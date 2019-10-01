@@ -3,9 +3,12 @@
 {% block content %}
 
     {% from "/helpers/_formhelpers.html" import render_field %}
-    <div class="row d-flex justify-content-center">
+    <div class="row d-flex justify-content-center ">
         <div class="col-lg-6 py-4" >
-            <h2>Реєстрація</h2>
+            <div class="row d-flex justify-content-between align-items-center">
+                <h2>Реєстрація</h2>
+                <a href="{{ url_for('register_help') }}" target="_blank" class="ml-1 mr-3 alert-link"><small><mark class="text-white bg-info">Дієвказ-інструкція</mark></small></a>
+            </div>
 
             <div class="alert alert-secondary" role="alert">
                 Для того щоб зареєструватися введіть логін, під яким ви зареєстровані на chess.com.
