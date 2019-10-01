@@ -173,34 +173,6 @@ def register():
 
 @app.route('/register_help')
 def register_help():
-    # form = RegisterForm(request.form)
-    # if request.method == 'GET':
-    # form.secret_key.data = str(uuid.uuid4())
-
-    # if request.method == 'POST' and form.validate():
-    #     username = form.username.data
-    #     password = generate_password_hash(form.password.data, method='sha256')
-    #     secret_key = form.secret_key.data
-    #
-    #     if User.query.filter_by(username=form.username.data).first() is not None:
-    #         flash('Цей користувач вже зареєстрований', category='danger')
-    #         return redirect(url_for('register'))
-    #
-    #     player_location = json.loads(r.get('https://api.chess.com/pub/player/{}'.format(username)).text)
-    #     if 'location' not in player_location:
-    #         flash('Такого користувача не існує на chess.com', category='danger')
-    #         return redirect(url_for('register'))
-    #     if player_location['location'] != secret_key:
-    #         flash('Не співпадає секретний ключ', category='danger')
-    #         return redirect(url_for('register'))
-    #
-    #     user = User(username=username, password=password)
-    #     db_session.add(user)
-    #     db_session.commit()
-    #
-    #     flash('Ви усішно зареєстровані!', category='success')
-    #     return redirect(url_for('index'))
-
     return render_template('register_help.html')
 
 
