@@ -1,9 +1,17 @@
 {% extends "base.html" %}
-
 {% block content %}
 
-    {% from "/helpers/_formhelpers.html" import render_field %}
-    <div class="row d-flex justify-content-center ">
-        <p>ТУТ КАРТИНКИ</p>
+<div class="container">
+    <h3 class="text-center mb-3">Ідіть за дієвказом для успішної реєстрації</h3>
+    <div class="row">
+        {% for i in range(8) %}
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="card  mr-3 mb-5">
+                <img src="/static/reg_help/krok_{{ i+1 }}.jpg" class="card-img-top img-responsive" alt="Крок {{ i+1 }}">
+            </div>
+        </div>
+        {% endfor %}
     </div>
+</div>
+
 {% endblock %}
