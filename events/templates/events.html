@@ -3,7 +3,7 @@
 
 
 <div class="container">
-    {% if current_user.rights.can_edit_events %}
+    {% if current_user.is_authenticated and current_user.rights.can_edit_events %}
     <div class="col py-4">
         <a class="btn btn-outline-info float-right" href="{{ url_for('events_bp.add_event') }}"><img src="/static/icons/add.svg">Додати подію</a>
     </div>
@@ -15,7 +15,7 @@
             <td>Подія</td>
             <td>Дата події</td>
             <td></td>
-            {% if current_user.rights.can_edit_events %}
+            {% if current_user.is_authenticated and current_user.rights.can_edit_events %}
             <td></td>
             <td></td>
             {% endif %}
@@ -26,7 +26,7 @@
             <td>{{ event['event_name'] }}</td>
             <td style="width: 50px">{{ event['event_date'].date() }}</td>
             <td style="width: 20px"><a class="btn btn-outline-info" href="{{ url_for('events_bp.event', event_id=event['event_id']) }}"><img src="/static/icons/eye.svg"></a></td>
-            {% if current_user.rights.can_edit_events %}
+            {% if current_user.is_authenticated and current_user.rights.can_edit_events %}
             <td style="width: 20px"><a class="btn btn-outline-success" href="{{ url_for('events_bp.edit_event', event_id=event['event_id']) }}"><img src="/static/icons/repo.svg"></a></td>
             <td style="width: 20px"><a class="btn btn-danger" href="{{ url_for('events_bp.delete_event', event_id=event['event_id']) }}"><img src="/static/icons/x.svg"></a></td>
             {% endif %}
@@ -42,7 +42,7 @@
             <td>Подія</td>
             <td>Дата події</td>
             <td></td>
-            {% if current_user.rights.can_edit_events %}
+            {% if current_user.is_authenticated and current_user.rights.can_edit_events %}
             <td></td>
             <td></td>
             {% endif %}
@@ -53,7 +53,7 @@
             <td>{{ event['event_name'] }}</td>
             <td style="width: 50px">{{ event['event_date'].date() }}</td>
             <td style="width: 20px"><a class="btn btn-outline-info" href="{{ url_for('events_bp.event', event_id=event['event_id']) }}"><img src="/static/icons/eye.svg"></a></td>
-            {% if current_user.rights.can_edit_events %}
+            {% if current_user.is_authenticated and current_user.rights.can_edit_events %}
             <td style="width: 20px"><a class="btn btn-outline-success" href="{{ url_for('events_bp.edit_event', event_id=event['event_id']) }}"><img src="/static/icons/repo.svg"></a></td>
             <td style="width: 20px"><a class="btn btn-danger" href="{{ url_for('events_bp.delete_event', event_id=event['event_id']) }}"><img src="/static/icons/x.svg"></a></td>
             {% endif %}
