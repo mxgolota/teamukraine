@@ -41,6 +41,7 @@ class UserRoles(Base):
     role_name = Column(String)
     can_change_users_roles = Column(Integer)
     can_edit_events = Column(Integer)
+    can_access_to_admin_page = Column(Integer)
 
 
 class Events(Base):
