@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div class="container-fluid">
+    <h3 class="text-center">Динаміка кількості гравців у командах</h3>
+    <div class="jumbotron d-flex align-items-center">
+        <div class="container text-center">
+    <form action="" method="POST">
+      <div class="form-row">
+        <div class="col">
+          {{ form.begin_date.label }}
+          {{ form.begin_date(class_="form-control") }}
+        </div>
+        <div class="col">
+          {{ form.end_date.label }}
+          {{ form.end_date(class_="form-control") }}
+        </div>
+        <div class="col">
+          {{ form.team.label }}
+          {{ form.team(class_="form-control") }}
+        </div>
+          <button type="submit" class="btn btn-primary">Показати</button>
+      </div>
+    </form>
+    </div>
+    </div>
+
+    <canvas id="line-chart" width="800" height="450"></canvas>
+
+    <script>
+new Chart(document.getElementById("line-chart"), {
+  type: 'line',
+  data: {
+    labels: [{% for date in dates %}
+    "{{ date }}",
+    {% endfor %}],
+    datasets: [{
+        data: [{% for value in values %}
+        "{{ value }}",
+        {% endfor %}],
+        label: "Кількість гравців у команді",
+        borderColor: "#FFBF00",
+        fill: false
+      }
+    ]
+  },
+  options: {
+    scales: {
+        yAxes: [{
+            display: true,
+                ticks: {}
+                 }]
+             },
+  }
+});
+</script>
+
+</div>
+
+{% endblock %}

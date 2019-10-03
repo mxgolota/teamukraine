@@ -23,6 +23,7 @@
 	<script src='https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js'></script>
 	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
 	<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+	<script src="//cdn.ckeditor.com/4.13.0/basic/ckeditor.js"></script>
 
     <title>Team Ukraine</title>
 </head>
@@ -64,6 +65,14 @@
 						<a class="dropdown-item" href = "{{ url_for('ucc2019') }}">UCC 2019</a>
 					</div>
 				</li>
+				<li class="nav-item">
+					<a href= "{{ url_for('events_bp.index') }}" class="nav-link">Події</a>
+				</li>
+				{% if current_user.is_authenticated and current_user.rights.can_access_to_admin_page %}
+				<li class="nav-item">
+						<a href = "{{ url_for('admin_bp.reporting') }}" class="nav-link">Звітність</a>
+				</li>
+				{% endif %}
 				</ul>
 				<ul class="navbar-nav">
 				{% if current_user.is_authenticated %}

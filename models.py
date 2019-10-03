@@ -9,9 +9,10 @@ class User(UserMixin, Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(String, ForeignKey('players.username'))
     password = Column(String)
+    role_id = Column(Integer, ForeignKey('roles.role_id'))
     liked = relationship('Event_User', foreign_keys='Event_User.user_id', backref='user', lazy='dynamic')
-
     info = relationship('UserExtended')
+    rights = relationship('UserRoles')
 
     def submit_to_event(self, event):
         if not self.submitted_to_event(event):
@@ -34,6 +35,15 @@ class UserExtended(Base):
     avatar = Column(String)
 
 
+class UserRoles(Base):
+    __tablename__ = 'roles'
+    role_id = Column(Integer, primary_key=True)
+    role_name = Column(String)
+    can_change_users_roles = Column(Integer)
+    can_edit_events = Column(Integer)
+    can_access_to_admin_page = Column(Integer)
+
+
 class Events(Base):
     __tablename__ = 'chess_events'
     event_id = Column(Integer, primary_key=True, autoincrement=True)
@@ -50,3 +60,4 @@ class Event_User(Base):
     id = Column(Integer, primary_key=True)
     event_id = Column(Integer, ForeignKey('chess_events.event_id'))
     user_id = Column(Integer, ForeignKey('users.id'))
+    event_user = relationship('User', backref='chess_events_users')

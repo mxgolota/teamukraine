@@ -10,6 +10,8 @@ import json
 from models import User, UserExtended, Events, Event_User
 from database import db_session, engine
 from datetime import datetime
+from events.events_app import events_bp
+from admin.admin_app import admin_bp
 
 
 app = Flask(__name__)
@@ -17,6 +19,10 @@ app.config.from_object('config.Config')
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+with app.app_context():
+    app.register_blueprint(events_bp)
+    app.register_blueprint(admin_bp)
 
 
 @app.teardown_appcontext
@@ -156,7 +162,7 @@ def register():
             flash('Не співпадає секретний ключ', category='danger')
             return redirect(url_for('register'))
 
-        user = User(username=username, password=password)
+        user = User(username=username, password=password, role_id=3)
         db_session.add(user)
         db_session.commit()
 
