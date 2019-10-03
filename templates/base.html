@@ -68,6 +68,11 @@
 				<li class="nav-item">
 					<a href= "{{ url_for('events_bp.index') }}" class="nav-link">Події</a>
 				</li>
+				{% if current_user.is_authenticated and current_user.rights.can_access_to_admin_page %}
+				<li class="nav-item">
+						<a href = "{{ url_for('admin_bp.reporting') }}" class="nav-link">Звітність</a>
+				</li>
+				{% endif %}
 				</ul>
 				<ul class="navbar-nav">
 				{% if current_user.is_authenticated %}
