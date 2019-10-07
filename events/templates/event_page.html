@@ -18,7 +18,7 @@
     <p class="text-center">
         <h6 class="text-left">Підписалися:</h6>
         {% for submit in this_event.submits %}
-        <a href="https://www.chess.com/member/{{ submit.event_user.info.username }}"><img src="{{ submit.event_user.info.avatar }}" class="rounded-circle" width="50"></a>
+        <a href="https://www.chess.com/member/{{ submit.event_user.info.username }}"><img src="{{ submit.event_user.info.avatar or "https://via.placeholder.com/50/7d7d7d/FFFFFF/?text="+submit.event_user.info.username[0]|upper }}" class="rounded-circle" width="50"></a>
         {% endfor %}
     </p>
 
