@@ -1,10 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
 
+{% block head %}
+{{super()}}
+
 <meta property="og:type"               content="event" />
 <meta property="og:title"              content="{{ this_event.event_name }}" />
-<meta property="og:description"        content="{{ this_event.event_description | safe }}" />
-<meta property="og:image"              content="/static/events/{{ this_event.event_picture }}" />
+<meta property="og:description"        content="{{ this_event.event_short_description }}" />
+<meta property="og:image"              content="https://www.team-ukraine.com.ua/static/events/{{ this_event.event_picture }}" />
+
+{% endblock head %}
 
 <div class="container">
     <h3 class="text-center">{{ this_event.event_name }}</h3>

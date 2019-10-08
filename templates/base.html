@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
+{% block head %}
 
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-147182130-1"></script>
@@ -14,10 +14,6 @@
 </script>
 
     <meta charset="UTF-8">
-  	<meta property="og:type"          content="website" />
-  	<meta property="og:title"         content="Team Ukraine" />
-  	<meta property="og:description"   content="Your description" />
-  	<meta property="og:image"         content="/static/4339.png" />
 
 	<link rel="icon" href="/static/ico_ukraine.png">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -30,6 +26,7 @@
 	<script src="//cdn.ckeditor.com/4.13.0/basic/ckeditor.js"></script>
 
     <title>Team Ukraine</title>
+	{% endblock head %}
 </head>
 <body>
 	<div id="fb-root"></div>
