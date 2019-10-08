@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div class="container-fluid">
+    <h3 class="text-center">Зміна складів команд</h3>
+    <div class="jumbotron d-flex align-items-center">
+        <div class="container text-center">
+    <form action="" method="POST">
+      <div class="form-row">
+        <div class="col">
+          {{ form.begin_date.label }}
+          {{ form.begin_date(class_="form-control") }}
+        </div>
+        <div class="col">
+          {{ form.end_date.label }}
+          {{ form.end_date(class_="form-control") }}
+        </div>
+        <div class="col">
+          {{ form.team.label }}
+          {{ form.team(class_="form-control") }}
+        </div>
+          <button type="submit" class="btn btn-primary">Показати</button>
+      </div>
+    </form>
+    </div>
+    </div>
+
+    {% if request.method == 'POST' %}
+    <div>
+        <h3 class="text-center">Зміни складу команди</h3>
+        {% if added|length == 0 and left|length == 0  %}
+        За цей час не було жодних змін
+        {% endif %}
+
+        {% if added|length > 0 %}
+        <h4>Додалися до команди</h4>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <td></td>
+                    <td>Username</td>
+                    <td>Куля</td>
+                    <td>Бліц</td>
+                    <td>Рапід</td>
+                    <td>Щоденні шахи</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for player in added %}
+                <tr>
+                    <td>
+                        <a href="{{ player['url'] }}">
+                        <img src="{{ player['avatar'] or "https://via.placeholder.com/50/7d7d7d/FFFFFF/?text="+ player['username'][0]|upper }}" class="rounded-circle" width="50">
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ player['url'] }}">{{ player['username'] }}</a>
+                    </td>
+                    <td>{{ player['chess_bullet_rating'] or "" }}</td>
+                    <td>{{ player['chess_blitz_rating'] or "" }}</td>
+                    <td>{{ player['chess_rapid_rating'] or "" }}</td>
+                    <td>{{ player['chess_daily_rating'] or "" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+
+        {% if left|length > 0 %}
+        <h4>Вийшли зі складу команди</h4>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <td></td>
+                    <td>Username</td>
+                    <td>Куля</td>
+                    <td>Бліц</td>
+                    <td>Рапід</td>
+                    <td>Щоденні шахи</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for player in left %}
+                <tr>
+                    <td>
+                        <a href="{{ player['url'] }}">
+                        <img src="{{ player['avatar'] or "https://via.placeholder.com/50/7d7d7d/FFFFFF/?text="+ player['username'][0]|upper }}" class="rounded-circle" width="50">
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ player['url'] }}">{{ player['username'] }}</a>
+                    </td>
+                    <td>{{ player['chess_bullet_rating'] or "" }}</td>
+                    <td>{{ player['chess_blitz_rating'] or "" }}</td>
+                    <td>{{ player['chess_rapid_rating'] or "" }}</td>
+                    <td>{{ player['chess_daily_rating'] or "" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
