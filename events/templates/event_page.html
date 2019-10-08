@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 
+<meta property="og:type"               content="event" />
+<meta property="og:title"              content="{{ this_event.event_name }}" />
+<meta property="og:description"        content="{{ this_event.event_description | safe }}" />
+<meta property="og:image"              content="/static/events/{{ this_event.event_picture }}" />
 
 <div class="container">
     <h3 class="text-center">{{ this_event.event_name }}</h3>
@@ -11,6 +15,11 @@
     </p>
     {% endif %}
 
+    <div class="fb-share-button" data-href="{{ url_for('events_bp.event', event_id=this_event.event_id, _external=True) }}" data-layout="button_count" data-size="large">
+        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ url_for('events_bp.event', event_id=this_event.event_id, _external=True) }}&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">
+            Поширити
+        </a>
+    </div>
     <p class="text-center">
         {{ this_event.event_description | safe }}
     </p>
@@ -18,7 +27,7 @@
     <p class="text-center">
         <h6 class="text-left">Підписалися:</h6>
         {% for submit in this_event.submits %}
-        <a href="https://www.chess.com/member/{{ submit.event_user.info.username }}"><img src="{{ submit.event_user.info.avatar }}" class="rounded-circle" width="50"></a>
+        <a href="https://www.chess.com/member/{{ submit.event_user.info.username }}"><img src="{{ submit.event_user.info.avatar or "https://via.placeholder.com/50/7d7d7d/FFFFFF/?text="+submit.event_user.info.username[0]|upper }}" class="rounded-circle" width="50"></a>
         {% endfor %}
     </p>
 
