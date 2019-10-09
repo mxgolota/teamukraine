@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
+{% block head %}
 
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-147182130-1"></script>
@@ -26,8 +26,11 @@
 	<script src="//cdn.ckeditor.com/4.13.0/basic/ckeditor.js"></script>
 
     <title>Team Ukraine</title>
+	{% endblock head %}
 </head>
 <body>
+	<div id="fb-root"></div>
+	<script async defer crossorigin="anonymous" src="https://connect.facebook.net/uk_UA/sdk.js#xfbml=1&version=v4.0"></script>
 
 	<!-- Top menu -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">

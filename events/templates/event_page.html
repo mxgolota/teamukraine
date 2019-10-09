@@ -1,6 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
 
+{% block head %}
+{{super()}}
+
+<meta property="og:type"               content="event" />
+<meta property="og:title"              content="{{ this_event.event_name }}" />
+<meta property="og:description"        content="{{ this_event.event_short_description }}" />
+<meta property="og:image"              content="https://www.team-ukraine.com.ua/static/events/{{ this_event.event_picture }}" />
+
+{% endblock head %}
 
 <div class="container">
     <h3 class="text-center">{{ this_event.event_name }}</h3>
@@ -11,6 +20,11 @@
     </p>
     {% endif %}
 
+    <div class="fb-share-button" data-href="{{ url_for('events_bp.event', event_id=this_event.event_id, _external=True) }}" data-layout="button_count" data-size="large">
+        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ url_for('events_bp.event', event_id=this_event.event_id, _external=True) }}&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">
+            Поширити
+        </a>
+    </div>
     <p class="text-center">
         {{ this_event.event_description | safe }}
     </p>
