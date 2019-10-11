@@ -12,6 +12,7 @@ from database import db_session, engine
 from datetime import datetime
 from events.events_app import events_bp
 from admin.admin_app import admin_bp
+from clubs.clubs_app import clubs_bp
 
 
 app = Flask(__name__)
@@ -23,6 +24,7 @@ login_manager.login_view = 'login'
 with app.app_context():
     app.register_blueprint(events_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(clubs_bp)
 
 
 @app.teardown_appcontext
