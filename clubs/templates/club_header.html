@@ -1,0 +1,22 @@
+<div class="nav-scroller py-1 mb-2">
+    <nav class="nav d-flex">
+        <a class="btn btn-outline-dark btn-sm m-2 p-2" href="{{ url_for('clubs_bp.club_index', club_id = club.club_id) }}">Інфо</a>
+
+        <a href="#" class="btn btn-outline-dark btn-sm m-2 p-2 dropdown-toggle" data-toggle="dropdown">Щоденні матчі</a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="{{ url_for('clubs_bp.daily_matches_registration', club_id = club.club_id) }}">Йде реєстрація</a>
+            <a class="dropdown-item" href="{{ url_for('clubs_bp.daily_matches_in_progress', club_id = club.club_id) }}">В процесі</a>
+            <a class="dropdown-item" href="{{ url_for('clubs_bp.daily_matches_finished', club_id = club.club_id) }}">Завершені</a>
+        </div>
+
+        <a class="btn btn-outline-dark btn-sm m-2 p-2" href="{{ url_for('clubs_bp.live_matches', club_id = club.club_id) }}">Живі матчі</a>
+        <a class="btn btn-outline-dark btn-sm m-2 p-2" href="{{ url_for('clubs_bp.club_players', club_id = club.club_id) }}">Гравці</a>
+
+    </nav>
+  </div>
+
+<h2>{{ club.name }}</h2>
+
+<img src="/static/{{ club.club_id }}.png" width="160">
+
+<hr>

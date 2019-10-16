@@ -1,5 +1,5 @@
 from flask_login import UserMixin
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, DECIMAL
 from sqlalchemy.orm import relationship
 from database import Base, db_session
 
@@ -30,9 +30,16 @@ class User(UserMixin, Base):
 
 class UserExtended(Base):
     __tablename__ = 'players'
+    player_id = Column(Integer)
     username = Column(String, primary_key=True)
     url = Column(String)
     avatar = Column(String)
+    chess_bullet_rating = Column(Integer)
+    chess_blitz_rating = Column(Integer)
+    chess_rapid_rating = Column(Integer)
+    chess_daily_rating = Column(Integer)
+    chess_daily_timeout_percent = Column(DECIMAL)
+    clubs = relationship('ClubPlayers', backref='players')
 
 
 class UserRoles(Base):
@@ -61,3 +68,54 @@ class Event_User(Base):
     event_id = Column(Integer, ForeignKey('chess_events.event_id'))
     user_id = Column(Integer, ForeignKey('users.id'))
     event_user = relationship('User', backref='chess_events_users')
+
+
+class Club(Base):
+    __tablename__ = 'clubs'
+    club_id = Column(Integer, primary_key=True)
+    name = Column(String)
+    location = Column(String)
+    created = Column(DateTime)
+    join_request = Column(String)
+    description = Column(String)
+    url = Column(String)
+    info = relationship('ClubSpider')
+    players = relationship('ClubPlayers', backref='clubs')
+    matches = relationship('ClubMatches', primaryjoin="or_(Club.club_id==ClubMatches.team1_id, Club.club_id==ClubMatches.team2_id)", lazy='dynamic')
+
+
+class ClubSpider(Base):
+    __tablename__ = 'clubs_spider'
+    club_id = Column(Integer, ForeignKey('clubs.club_id'), primary_key=True)
+    gather_full_info = Column(Integer)
+
+
+class ClubPlayers(Base):
+    __tablename__ = 'pl_cl'
+    # id = Column(Integer, primary_key=True)
+    player_id = Column(Integer, ForeignKey('players.player_id'), primary_key=True)
+    club_id = Column(Integer, ForeignKey('clubs.club_id'), primary_key=True)
+    player_info = relationship('UserExtended')
+
+
+class ClubMatches(Base):
+    __tablename__ = 'matches'
+    match_id = Column(Integer, primary_key=True)
+    name = Column(String)
+    url = Column(String)
+    description = Column(String)
+    start_time = Column(DateTime)
+    end_time = Column(DateTime)
+    status = Column(String)
+    boards = Column(Integer)
+    rules = Column(Integer)
+    time_class = Column(String)
+    time_control = Column(String)
+    team1_id = Column(Integer, ForeignKey('clubs.club_id'))
+    team1_score = Column(DECIMAL)
+    team2_id = Column(Integer, ForeignKey('clubs.club_id'))
+    team2_score = Column(DECIMAL)
+    min_rating = Column(Integer)
+    max_rating = Column(Integer)
+    team1 = relationship('Club', primaryjoin='Club.club_id==ClubMatches.team1_id')
+    team2 = relationship('Club', primaryjoin='Club.club_id==ClubMatches.team2_id')
