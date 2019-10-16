@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% include "club_header.html" %}
+
+<h4>Реєстрація на матчі</h4>
+
+<table class="table table-bordered table-hover table-responsive">
+    <thead>
+        <tr class="bg-dark text-white text-center">
+            <td class="align-middle">Назва матчу</td>
+            <td class="align-middle">Команда #1</td>
+            <td class="align-middle">Команда #2</td>
+            <td class="align-middle">Рейтинги</td>
+        </tr>
+    </thead>
+    <tbody>
+    {% for match in matches %}
+    <tr>
+        <td class="border-dark"><a class="text-dark" href="{{ match.url }}">{{ match.name }}</a></td>
+        <td class="border-dark">{{ match.team1.name }}</td>
+        <td class="border-dark">{{ match.team2.name }}</td>
+        {% if match.min_rating is none and match.max_rating is none %}
+        <td class="border-dark"></td>
+        {% elif match.min_rating is none and match.max_rating is not none %}
+        <td class="border-dark">{{ "< {}".format(match.max_rating) }}</td>
+        {% elif match.min_rating is not none and match.max_rating is none %}
+        <td class="border-dark">{{ "> {}".format(match.min_rating) }}</td>
+        {% else %}
+        <td class="border-dark">{{ "{} - {}".format(match.min_rating, match.max_rating) }}</td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
+
+

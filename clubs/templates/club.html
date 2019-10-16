@@ -1,17 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="nav-scroller py-1 mb-2">
-    <nav class="nav d-flex justify-content-between">
-      <a class="p-2" href="#">Щоденні матчі</a>
-    </nav>
-  </div>
-
-<h2>{{ club.name }}</h2>
-
-<img src="/static/{{ club.club_id }}.png" width="160">
-
-<hr>
+{% include "club_header.html" %}
 
 <h4>Опис клубу: </h4>
 

@@ -34,6 +34,10 @@ class UserExtended(Base):
     username = Column(String, primary_key=True)
     url = Column(String)
     avatar = Column(String)
+    chess_bullet_rating = Column(String)
+    chess_blitz_rating = Column(String)
+    chess_rapid_rating = Column(String)
+    clubs = relationship('ClubPlayers', backref='players')
 
 
 class UserRoles(Base):
@@ -74,7 +78,7 @@ class Club(Base):
     description = Column(String)
     url = Column(String)
     info = relationship('ClubSpider')
-    players = relationship('ClubPlayers', backref='clubs', lazy='dynamic')
+    players = relationship('ClubPlayers', backref='clubs')
     matches = relationship('ClubMatches', primaryjoin="or_(Club.club_id==ClubMatches.team1_id, Club.club_id==ClubMatches.team2_id)", lazy='dynamic')
 
 
@@ -89,6 +93,7 @@ class ClubPlayers(Base):
     # id = Column(Integer, primary_key=True)
     player_id = Column(Integer, ForeignKey('players.player_id'), primary_key=True)
     club_id = Column(Integer, ForeignKey('clubs.club_id'), primary_key=True)
+    player_info = relationship('UserExtended')
 
 
 class ClubMatches(Base):

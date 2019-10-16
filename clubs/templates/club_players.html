@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% include "club_header.html" %}
+
+<h4>Гравці клубу</h4>
+
+
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <td>Username</td>
+        <td>Bullet</td>
+        <td>Blitz</td>
+        <td>Rapid</td>
+        <td>Daily</td>
+        <td>Daily timeout (%)</td>
+    </tr>
+    </thead>
+    <tbody>
+    {% for player in club.players %}
+    <tr>
+        <td>{{ player.player_info.avatar }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
+
+

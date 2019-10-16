@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% include "club_header.html" %}
+
+<h4>Завершені матчі</h4>
+
+<table class="table table-bordered table-hover table-responsive">
+    <thead>
+        <tr class="bg-dark text-white text-center">
+            <td class="align-middle">Назва матчу</td>
+            <td class="align-middle">Команда #1</td>
+            <td class="align-middle">Очки команди #1</td>
+            <td class="align-middle">Кількість дошок</td>
+            <td class="align-middle">Очки команди #2</td>
+            <td class="align-middle">Команда #2</td>
+        </tr>
+    </thead>
+    <tbody>
+    {% for match in matches %}
+    {% if (match.team1_id == club.club_id and match.team1_score > match.team2_score)
+    or
+    (match.team2_id == club.club_id and match.team2_score > match.team1_score) %}
+    <tr class="table-success">
+    {% elif (match.team1_id == club.club_id and match.team1_score < match.team2_score)
+    or
+    (match.team2_id == club.club_id and match.team2_score < match.team1_score) %}
+    <tr class="table-danger">
+    {% else %}
+    <tr class="table-warning">
+    {% endif %}
+        <td class="border-dark"><a class="text-dark" href="{{ match.url }}">{{ match.name }}</a></td>
+        <td class="border-dark">{{ match.team1.name }}</td>
+        <td class="border-dark"><span class="font-weight-bold">{{ match.team1_score }}</span></td>
+        <td class="border-dark">{{ match.boards }}</td>
+        <td class="border-dark"><span class="font-weight-bold">{{ match.team2_score }}</span></td>
+        <td class="border-dark">{{ match.team2.name }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
+
+
