@@ -5,10 +5,10 @@
 
 <h4>Гравці клубу</h4>
 
-
-<table class="table table-bordered">
+<table id="players" class="table table-hover">
     <thead>
     <tr>
+        <td></td>
         <td>Username</td>
         <td>Bullet</td>
         <td>Blitz</td>
@@ -18,13 +18,48 @@
     </tr>
     </thead>
     <tbody>
-    {% for player in club.players %}
+    {% for player in players %}
     <tr>
-        <td>{{ player.player_info.avatar }}</td>
+        <td><img src="{{ player.avatar or "https://via.placeholder.com/50/7d7d7d/FFFFFF/?text="+ player.username[0]|upper }}" class="rounded-circle" width="50"></td>
+        <td><a href="{{ player.url }}">{{ player.username or "" }}</a></td>
+        <td>{{ player.chess_bullet_rating or "" }}</td>
+        <td>{{ player.chess_blitz_rating or "" }}</td>
+        <td>{{ player.chess_rapid_rating or "" }}</td>
+        <td>{{ player.chess_daily_rating or "" }}</td>
+        <td>{{ player.chess_daily_timeout_percent or "" }}</td>
     </tr>
     {% endfor %}
     </tbody>
 </table>
+
+<script>
+ $(document).ready(function() {
+        $('#players').dataTable( {
+            "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "Всі"] ],
+            "language": {
+	            "sProcessing":   "Зачекайте...",
+	            "sLengthMenu":   "Показати _MENU_ записів",
+	            "sZeroRecords":  "Записи відсутні.",
+	            "sInfo":         "Записи з _START_ по _END_ із _TOTAL_ записів",
+	            "sInfoEmpty":    "Записи з 0 по 0 із 0 записів",
+	            "sInfoFiltered": "(відфільтровано з _MAX_ записів)",
+	            "sInfoPostFix":  "",
+	            "sSearch":       "Пошук:",
+	            "sUrl":          "",
+	            "oPaginate": {
+		            "sFirst": "Перша",
+		            "sPrevious": "Попередня",
+		            "sNext": "Наступна",
+		            "sLast": "Остання"
+	           },
+	        "oAria": {
+		        "sSortAscending":  ": активувати для сортування стовпців за зростанням",
+		        "sSortDescending": ": активувати для сортування стовпців за спаданням"
+    	        }
+            }
+        } );
+    } );
+    </script>
 
 {% endblock %}
 

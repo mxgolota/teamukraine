@@ -34,9 +34,11 @@ class UserExtended(Base):
     username = Column(String, primary_key=True)
     url = Column(String)
     avatar = Column(String)
-    chess_bullet_rating = Column(String)
-    chess_blitz_rating = Column(String)
-    chess_rapid_rating = Column(String)
+    chess_bullet_rating = Column(Integer)
+    chess_blitz_rating = Column(Integer)
+    chess_rapid_rating = Column(Integer)
+    chess_daily_rating = Column(Integer)
+    chess_daily_timeout_percent = Column(DECIMAL)
     clubs = relationship('ClubPlayers', backref='players')
 
 

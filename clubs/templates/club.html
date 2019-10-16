@@ -10,7 +10,7 @@
 <p><strong>Дата створення: </strong> {{ club.created }}</p>
 <p><strong>Місцезнаходження: </strong> {{ club.location }}</p>
 <p><strong>Посилання: </strong> <a href="{{ club.url }}">{{ club.url }}</a></p>
-<p><strong>Кількість гравців: </strong> {{ club.players.count() }}</p>
+<p><strong>Кількість гравців: </strong> {{ club.players | length }}</p>
 
 {% endblock %}
 

@@ -18,7 +18,7 @@
     <tr>
         <td class="align-middle"><img src="/static/{{ club.club_id }}.png" width="100"></td>
         <td class="align-middle">{{ club.name }}</td>
-        <td class="align-middle">{{ club.players.count() }}</td>
+        <td class="align-middle">{{ club.players | length }}</td>
         <td class="align-middle"><a href="{{ url_for('clubs_bp.club_index', club_id = club.club_id) }}" class="btn btn-primary">Переглянути</td>
     </tr>
     {% endfor %}

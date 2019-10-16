@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template
 from models import Club, ClubSpider, ClubMatches, ClubPlayers, UserExtended
-from database import or_
+from database import db_session, or_, join
 
 
 clubs_bp = Blueprint('clubs_bp', __name__, template_folder='templates', url_prefix='/clubs')
@@ -69,5 +69,6 @@ def live_matches(club_id):
 @clubs_bp.route("/<int:club_id>/players")
 def club_players(club_id):
     club = Club.query.filter(Club.club_id == club_id).first()
+    players = UserExtended.query.join(ClubPlayers).filter(ClubPlayers.club_id == club_id).all()
 
-    return render_template("club_players.html", club=club)
+    return render_template("club_players.html", club=club, players=players)

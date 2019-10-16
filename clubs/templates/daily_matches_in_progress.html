@@ -5,12 +5,6 @@
 
 <h4>Матчі, що йдуть</h4>
 
-Кольорове кодування:
-<span class="badge badge-success">Фактично виграні матчі</span>
-<span class="badge badge-danger">Фактично програні матчі</span>
-<span class="badge badge-warning">Напружений матч</span>
-<span class="badge badge-info">Лишилось трохи до перемоги</span>
-
 <table class="table table-bordered table-hover table-responsive">
     <thead>
         <tr class="bg-dark text-white text-center">
@@ -24,12 +18,7 @@
     </thead>
     <tbody>
     {% for match in matches %}
-    <tr class="
-        {% if match['forecast_result'] == 'win' %}table-success
-        {% elif match['forecast_result'] == 'lost' %}table-danger
-        {% elif match['forecast_result'] == 'bitleft' %}table-info
-        {% elif match['forecast_result'] == 'warning' %}table-warning
-        {% else %}{% endif %}">
+    <tr>
         <td class="border-dark"><a class="text-dark" href="{{ match.url }}">{{ match.name }}</td>
         <td class="border-dark">{{ match.team1.name }}</td>
         <td class="border-dark">{{ match.team1_score }}</td>
