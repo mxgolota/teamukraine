@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
+from flask import Flask, render_template, flash, redirect, url_for, logging, request
 from forms import RegisterForm, LoginForm
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -7,7 +7,7 @@ import numpy as np
 import uuid
 import requests as r
 import json
-from models import User, UserExtended, Events, Event_User
+from models import User, Events
 from database import db_session, engine
 from datetime import datetime
 from events.events_app import events_bp
@@ -44,30 +44,6 @@ def index():
     return render_template("index.html", last_events=last_events)
 
 
-@app.route("/teams/<int:club_id>")
-def club(club_id):
-    with engine.connect() as conn:
-        result = conn.execute("call usp_club_info(%s)", ([club_id]))
-        club_info = [row for row in result]
-
-    with engine.connect() as conn:
-        result = conn.execute("call usp_club_matches(%s)", ([club_id]))
-        club_matches = [row for row in result]
-
-    return render_template("club.html",
-                           club_id=club_id,
-                           club_info=club_info[0],
-                           club_matches_reg=[x for x in club_matches if x['status'] == 'registration'],
-                           club_matches_prog=[x for x in club_matches if x['status'] == 'in_progress'])
-
-@app.route("/players")
-def players():
-    with engine.connect() as conn:
-        result = conn.execute("call usp_players_search")
-        players = [row for row in result]
-    return render_template("players.html", players=players)
-
-
 @app.route("/tournaments/lcwl_u1600")
 def lcwl_u1600():
     with engine.connect() as conn:
@@ -98,6 +74,7 @@ def lcwl_main():
         columns = tmp.keys()
 
     points = pd.DataFrame(result, columns=columns)
+    max_points = pd.DataFrame(result, columns=columns)
     points = pd.pivot_table(points, columns=['club_2', 'round_id'], index=['player_1', 'chess_blitz_rating'],
                             values='team1_player_score') \
         .reset_index()
@@ -107,6 +84,16 @@ def lcwl_main():
     points['Total'] = points[list(points.columns[2:])].sum(axis=1)
     rivals = points.columns[2:]
     points = points.sort_values(by=['Total'], ascending=False)
+
+    max_points = pd.pivot_table(max_points, columns=['club_2', 'round_id'], index=['player_1', 'chess_blitz_rating'],
+                            values='team1_player_max_possible_score').reset_index()
+    max_points = max_points.reindex(columns=cols).reset_index(drop=True)
+
+    max_points['Total_max'] = max_points[list(max_points.columns[2:])].sum(axis=1)
+
+    points = pd.merge(points, max_points[['Total_max', 'player_1']], on='player_1', how='left')
+    points['points_percentage'] = 100*points['Total']/points['Total_max']
+    points = points.sort_values(by=['Total', 'points_percentage'], ascending=False)
     points['Place'] = np.arange(1, len(points) + 1)
 
     return render_template("lcwl_best_players.html", points=points, rivals=rivals)
@@ -172,6 +159,7 @@ def register():
         return redirect(url_for('index'))
 
     return render_template('register.html', form=form)
+
 
 @app.route('/register_help')
 def register_help():
