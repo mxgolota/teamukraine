@@ -60,7 +60,7 @@
       {% for index, round in (rounds.loc[rounds['round_id'] == i]).iterrows(): %}
           <tr>
               <td class="align-middle border border-secondary" style="width: 40%">
-                  <span><a href="{{ url_for('club' ,club_id=round['team1_id']) }}">{{ round['team1_name'] }}</a></span>
+                  <span><a href="{{ url_for('clubs_bp.club_index' ,club_id=round['team1_id']) }}">{{ round['team1_name'] }}</a></span>
                   <img style="max-width:30px;" src="/static/{{ round['team1_id'] }}.png">
               </td>
               <td class="align-middle border border-secondary style="width: 10%">
@@ -83,7 +83,7 @@
               </span>
               </td>
               <td class="align-middle border border-secondary" style="width: 40%">
-                  <span><a href="{{ url_for('club' ,club_id=round['team2_id']) }}">{{ round['team2_name'] }}</a></span>
+                  <span><a href="{{ url_for('clubs_bp.club_index' ,club_id=round['team2_id']) }}">{{ round['team2_name'] }}</a></span>
                   <img style="max-width:30px;" src="/static/{{ round['team2_id'] }}.png">
               </td>
           </tr>
@@ -109,7 +109,7 @@
           <tr>
             <td class="border border-secondary">{{ index+1 }}</td>
             <td class="border border-secondary"><a href="{{ player['url'] }}">{{ player['username'] }}</a></td>
-            <td class="border border-secondary"><a href="{{ url_for('club' ,club_id=player['team_id']) }}">{{ player['teamname'] }}</a> <img style="max-width:30px;" src="/static/{{ player['team_id'] }}.png"></td>
+            <td class="border border-secondary"><a href="{{ url_for('clubs_bp.club_index' ,club_id=player['team_id']) }}">{{ player['teamname'] }}</a> <img style="max-width:30px;" src="/static/{{ player['team_id'] }}.png"></td>
             <td class="border border-secondary">{{ player['player_score'] }}</td>
             <td class="border border-secondary">{{ player['max_possible_score'] }}</td>
             <td class="border border-secondary">{{ "{:.2%}".format(player['player_score']/player['max_possible_score']) }}</td>
