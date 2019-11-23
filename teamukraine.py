@@ -84,7 +84,6 @@ def lcwl_main():
     points['Total'] = points[list(points.columns[2:])].sum(axis=1)
     rivals = points.columns[2:]
     points = points.sort_values(by=['Total'], ascending=False)
-    points['Place'] = np.arange(1, len(points) + 1)
 
     max_points = pd.pivot_table(max_points, columns=['club_2', 'round_id'], index=['player_1', 'chess_blitz_rating'],
                             values='team1_player_max_possible_score').reset_index()
@@ -95,6 +94,7 @@ def lcwl_main():
     points = pd.merge(points, max_points[['Total_max', 'player_1']], on='player_1', how='left')
     points['points_percentage'] = 100*points['Total']/points['Total_max']
     points = points.sort_values(by=['Total', 'points_percentage'], ascending=False)
+    points['Place'] = np.arange(1, len(points) + 1)
 
     return render_template("lcwl_best_players.html", points=points, rivals=rivals)
 
