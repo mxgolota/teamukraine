@@ -139,6 +139,57 @@ def ucc2019():
     return render_template("ucc2019.html", best_players=best_players, rounds=rounds, tournament_table=tournament_table)
 
 
+@app.route("/tournaments/ucc2019_bullet_rapid")
+def ucc2019_bullet_rapid():
+    with engine.connect() as conn:
+        result = conn.execute("call usp_stat_ucc2019_rapid_bullet_best_player")
+        best_players_result = [row for row in result]
+        best_players_columns = result.keys()
+
+    with engine.connect() as conn:
+        result = conn.execute("call usp_stat_ucc2019_rapid_bullet_rounds")
+        rounds_result = [row for row in result]
+        rounds_result_columns = result.keys()
+
+    best_players = pd.DataFrame(best_players_result, columns=best_players_columns)
+    rounds = pd.DataFrame(rounds_result, columns=rounds_result_columns)
+
+    groupA_rounds = rounds.loc[rounds['team1_id'].isin([84300, 42800, 67918, 57502, 71728, 52452])]
+    groupB_rounds = rounds.loc[rounds['team1_id'].isin([71066, 42164, 84302, 27634, 61104, 72704])]
+
+    groupA_first_teams = groupA_rounds[['round_id', 'match_id', 'team1_name', 'team1_result', 'team2_name']]
+    groupA_first_teams = groupA_first_teams.rename(columns={"team1_name": "team_name", "team1_result": "team_result", "team2_name": "opponent_name"})
+    groupA_second_teams = groupA_rounds[['round_id', 'match_id', 'team2_name', 'team2_result', 'team1_name']]
+    groupA_second_teams = groupA_second_teams.rename(columns={"team2_name": "team_name", "team2_result": "team_result", "team1_name": "opponent_name"})
+    groupA_tournament_table = pd.concat([groupA_first_teams, groupA_second_teams]).reset_index()
+
+    groupA_tournament_table = pd.pivot_table(groupA_tournament_table, columns=['opponent_name'], index=['team_name'], values='team_result', aggfunc='sum').reset_index()
+
+    groupA_tournament_table['Загалом'] = groupA_tournament_table.sum(axis=1)
+    groupA_tournament_table.reset_index(inplace=True)
+    groupA_tournament_table.sort_values(by=['Загалом'], ascending=False, inplace=True)
+
+    groupB_first_teams = groupB_rounds[['round_id', 'match_id', 'team1_name', 'team1_result', 'team2_name']]
+    groupB_first_teams = groupB_first_teams.rename(
+        columns={"team1_name": "team_name", "team1_result": "team_result", "team2_name": "opponent_name"})
+    groupB_second_teams = groupB_rounds[['round_id', 'match_id', 'team2_name', 'team2_result', 'team1_name']]
+    groupB_second_teams = groupB_second_teams.rename(
+        columns={"team2_name": "team_name", "team2_result": "team_result", "team1_name": "opponent_name"})
+    groupB_tournament_table = pd.concat([groupB_first_teams, groupB_second_teams]).reset_index()
+
+    groupB_tournament_table = pd.pivot_table(groupB_tournament_table, columns=['opponent_name'], index=['team_name'],
+                                             values='team_result', aggfunc='sum').reset_index()
+
+    groupB_tournament_table['Загалом'] = groupB_tournament_table.sum(axis=1)
+    groupB_tournament_table.reset_index(inplace=True)
+    groupB_tournament_table.sort_values(by=['Загалом'], ascending=False, inplace=True)
+
+    return render_template("ucc2019_bullet_rapid.html", best_players=best_players, rounds=rounds,
+                           groupA_tournament_table=groupA_tournament_table,
+                           groupB_tournament_table=groupB_tournament_table)
+
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm(request.form)
