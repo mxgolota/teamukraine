@@ -75,6 +75,64 @@
           </tr>
           </tbody>
       </table>
+
+    <h3>Фінальна таблиця</h3>
+      <table class="align-middle text-center table table-bordered table-hover">
+          <thead class="table-active">
+          <tr>
+              <td style="width: 10%" class="border border-secondary">#</td>
+              <td  class="border border-secondary">Команда</td>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+              <td class="border border-secondary">1</td>
+              <td class="border border-secondary"><a href="{{ url_for('clubs_bp.club_index', club_id = 71066) }}" ><img src="/static/icons/gold-medal.png"> Mykolayiv chess team</a></td>
+          </tr>
+          <tr>
+              <td class="border border-secondary">2</td>
+              <td class="border border-secondary"><a href="{{ url_for('clubs_bp.club_index', club_id = 84300) }}" ><img src="/static/icons/silver-medal.png">Team - Kherson</a></td>
+          </tr>
+          <tr>
+              <td class="border border-secondary">3</td>
+              <td class="border border-secondary"><a href="{{ url_for('clubs_bp.club_index', club_id = 57502) }}" ><img src="/static/icons/bronze-medal.png">Team Ivano-Frankivsk</a></td>
+          </tr>
+          <tr>
+              <td class="border border-secondary">4</td>
+              <td class="border border-secondary"><a href="{{ url_for('clubs_bp.club_index', club_id = 27634) }}" >Team Kyiv</a></td>
+          </tr>
+          <tr>
+              <td class="border border-secondary">5</td>
+              <td class="border border-secondary"><a href="{{ url_for('clubs_bp.club_index', club_id = 42164) }}" >Team Kharkov</a></td>
+          </tr>
+          <tr>
+              <td class="border border-secondary">6</td>
+              <td class="border border-secondary"><a href="{{ url_for('clubs_bp.club_index', club_id = 42800) }}" >Team Odessa - Жемчужина у моря</a></td>
+          </tr>
+          <tr>
+              <td class="border border-secondary">7</td>
+              <td class="border border-secondary"><a href="{{ url_for('clubs_bp.club_index', club_id = 61104) }}" >Team Lviv</a></td>
+          </tr>
+          <tr>
+              <td class="border border-secondary">8</td>
+              <td class="border border-secondary"><a href="{{ url_for('clubs_bp.club_index', club_id = 52452) }}" >Team Donetsk</a></td>
+          </tr>
+          <tr>
+              <td class="border border-secondary">9</td>
+              <td class="border border-secondary"><a href="{{ url_for('clubs_bp.club_index', club_id = 84302) }}" >Team Dnipro</a></td>
+          </tr>
+          <tr>
+              <td class="border border-secondary">10</td>
+              <td class="border border-secondary"><a href="{{ url_for('clubs_bp.club_index', club_id = 71728) }}" >Team Makeevka</a></td>
+          </tr>
+          <tr>
+              <td class="border border-secondary">11-12</td>
+              <td class="border border-secondary"><a href="{{ url_for('clubs_bp.club_index', club_id = 71728) }}" >Crimea team</a> ; <a href="{{ url_for('clubs_bp.club_index', club_id = 72704) }}" >Team Khmelnitskiy</a></td>
+          </tr>
+          </tbody>
+      </table>
+
+
   </div>
   <div class="tab-pane fade" id="rounds" role="tabpanel" aria-labelledby="rounds-tab">
       {% for i in range(1, rounds['round_id'].max()+1) %}

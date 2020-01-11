@@ -154,8 +154,10 @@ def ucc2019_bullet_rapid():
     best_players = pd.DataFrame(best_players_result, columns=best_players_columns)
     rounds = pd.DataFrame(rounds_result, columns=rounds_result_columns)
 
-    groupA_rounds = rounds.loc[rounds['team1_id'].isin([84300, 42800, 67918, 57502, 71728, 52452])]
-    groupB_rounds = rounds.loc[rounds['team1_id'].isin([71066, 42164, 84302, 27634, 61104, 72704])]
+    groupA_rounds = rounds.loc[rounds['team1_id'].isin([84300, 42800, 67918, 57502, 71728, 52452])
+                               & rounds['round_id'].isin([1, 2, 3, 4, 5])]
+    groupB_rounds = rounds.loc[rounds['team1_id'].isin([71066, 42164, 84302, 27634, 61104, 72704])
+                               & rounds['round_id'].isin([1, 2, 3, 4, 5])]
 
     groupA_first_teams = groupA_rounds[['round_id', 'match_id', 'team1_name', 'team1_result', 'team2_name']]
     groupA_first_teams = groupA_first_teams.rename(columns={"team1_name": "team_name", "team1_result": "team_result", "team2_name": "opponent_name"})
