@@ -139,6 +139,39 @@ def ucc2019():
     return render_template("ucc2019.html", best_players=best_players, rounds=rounds, tournament_table=tournament_table)
 
 
+@app.route("/tournaments/lcel_s1")
+def lcel_s1():
+    with engine.connect() as conn:
+        result = conn.execute("call usp_stat_lcel_s1_best_players")
+        best_players_result = [row for row in result]
+        best_players_columns = result.keys()
+
+    with engine.connect() as conn:
+        result = conn.execute("call usp_stat_lcel_s1_rounds")
+        rounds_result = [row for row in result]
+        rounds_result_columns = result.keys()
+
+    best_players = pd.DataFrame(best_players_result, columns=best_players_columns)
+    rounds = pd.DataFrame(rounds_result, columns=rounds_result_columns)
+    first_teams = rounds[['round_id', 'match_id', 'team1_name', 'team1_result', 'team2_name']]
+    first_teams = first_teams.rename(columns={"team1_name": "team_name", "team1_result": "team_result", "team2_name": "opponent_name"})
+    second_teams = rounds[['round_id', 'match_id', 'team2_name', 'team2_result', 'team1_name']]
+    second_teams = second_teams.rename(columns={"team2_name": "team_name", "team2_result": "team_result", "team1_name": "opponent_name"})
+    tournament_table = pd.concat([first_teams, second_teams]).reset_index()
+
+    print(tournament_table)
+
+    tournament_table = pd.pivot_table(tournament_table, columns=['opponent_name'], index=['team_name'], values='team_result').reset_index()
+
+    print(tournament_table)
+
+    tournament_table['Загалом'] = tournament_table.sum(axis=1)
+    tournament_table.reset_index(inplace=True)
+    tournament_table.sort_values(by=['Загалом'], ascending=False, inplace=True)
+
+    return render_template("ucc2019.html", best_players=best_players, rounds=rounds, tournament_table=tournament_table)
+
+
 @app.route("/tournaments/ucc2019_bullet_rapid")
 def ucc2019_bullet_rapid():
     with engine.connect() as conn:
