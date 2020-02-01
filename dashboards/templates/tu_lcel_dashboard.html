@@ -1,0 +1,35 @@
+{% extends "dashboards.html" %}
+{% block content %}
+
+<table class="align-middle text-center table table-bordered table-hover table-sm">
+          <thead class="table-active">
+          <tr>
+              <td class="border border-secondary"></td>
+          {% for column in tournament_table.columns[2:] %}
+              <td class="border border-secondary"><img src="/static/{{ column }}.png" width="25"></td>
+          {% endfor %}
+          </tr>
+          </thead>
+          <tbody>
+          {% for index, row in tournament_table.iterrows(): %}
+          <tr>
+              {% for column in tournament_table.columns[1:2] %}
+              <td class="border border-secondary">
+                  <img src="/static/{{ row[column]|int }}.png" width="25">
+              </td>
+              {% endfor %}
+              {% for column in tournament_table.columns[2:] %}
+              {% if row[column]|string != 'nan' %}
+              <td class="border border-secondary">{{ row[column] }}</td>
+              {% elif row[1] == column %}
+              <td class="border border-secondary"> X </td>
+              {% else %}
+              <td class="border border-secondary"> - </td>
+              {% endif %}
+              {% endfor %}
+          {% endfor %}
+          </tr>
+          </tbody>
+      </table>
+
+{% endblock %}

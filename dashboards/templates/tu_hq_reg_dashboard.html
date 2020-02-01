@@ -1,0 +1,29 @@
+{% extends "dashboards.html" %}
+{% block content %}
+
+<table class="table table-bordered table-hover table-sm">
+{% for index, row in matches.iterrows(): %}
+    {% if row['our_math_wait_score'] < row['enemy_math_wait_score'] %}
+    <thead style="background-color:#fdb9c8;"  data-toggle="collapse" data-target="#collapse_data" aria-expanded="false" aria-controls="collapse_data">
+    {% else %}
+    <thead data-toggle="collapse" data-target="#collapse_data" aria-expanded="false" aria-controls="collapse_data">
+    {% endif %}
+        <tr>
+            <td class="text-center" style="width:25%"><img src="/static/{{ row['our_team_id'] }}.png" width="25"> {{ row['our_team_name'] }}</td>
+            <td class="text-center" style="width:22%"> <span class="font-weight-bold">{{ row['our_players_cnt'] }} <sup>+{{ row['our_players_cnt'] - row['our_prev_players_cnt'] }}</sup> <br> <small class="text-muted"> ( {{ '%0.1f'|format(row['our_math_wait_score']) }} ) </small></span></td>
+            <td class="text-center" style="width:6%">
+                Players
+                <br>
+                <small class="text-muted">Possible score</small>
+                <br>
+                <a class="btn btn-outline-dark btn-sm" href="{{ row['link'] }}" target="_blank">Матч</a>
+            </td>
+            <td class="text-center" style="width:22%"> <span class="font-weight-bold">{{ row['enemy_players_cnt'] }} <sup>+{{ row['enemy_players_cnt'] - row['enemy_prev_players_cnt'] }}</sup><br> <small class="text-muted"> ( {{ '%0.1f'|format(row['enemy_math_wait_score']) }} ) </small></span></td>
+            <td class="text-center" style="width:25%"><img src="/static/{{ row['enemy_team_id'] }}.png" width="25"> {{ row['enemy_team_name'] }}</td>
+        </tr>
+        </thead>
+
+{% endfor %}
+    </table>
+
+{% endblock %}

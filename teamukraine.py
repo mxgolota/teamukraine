@@ -13,6 +13,7 @@ from datetime import datetime
 from events.events_app import events_bp
 from admin.admin_app import admin_bp
 from clubs.clubs_app import clubs_bp
+from dashboards.dashboards_app import dashboards_bp
 
 
 app = Flask(__name__)
@@ -25,6 +26,7 @@ with app.app_context():
     app.register_blueprint(events_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(clubs_bp)
+    app.register_blueprint(dashboards_bp)
 
 
 @app.teardown_appcontext
@@ -159,17 +161,13 @@ def lcel_s1():
     second_teams = second_teams.rename(columns={"team2_name": "team_name", "team2_result": "team_result", "team1_name": "opponent_name"})
     tournament_table = pd.concat([first_teams, second_teams]).reset_index()
 
-    print(tournament_table)
-
-    tournament_table = pd.pivot_table(tournament_table, columns=['opponent_name'], index=['team_name'], values='team_result').reset_index()
-
-    print(tournament_table)
+    tournament_table = tournament_table.groupby(['team_name', 'opponent_name'])['team_result'].sum(min_count=1).unstack().reset_index()
 
     tournament_table['Загалом'] = tournament_table.sum(axis=1)
     tournament_table.reset_index(inplace=True)
     tournament_table.sort_values(by=['Загалом'], ascending=False, inplace=True)
 
-    return render_template("ucc2019.html", best_players=best_players, rounds=rounds, tournament_table=tournament_table)
+    return render_template("lcel_s1.html", best_players=best_players, rounds=rounds, tournament_table=tournament_table)
 
 
 @app.route("/tournaments/ucc2019_bullet_rapid")
