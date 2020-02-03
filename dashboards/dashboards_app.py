@@ -21,11 +21,10 @@ def tu_hq_rm_dasboard():
         in_progress_matches_columns = result.keys()
 
     in_progress_matches = pd.DataFrame(in_progress_matches_result, columns=in_progress_matches_columns)
-    return render_template(
-        'tu_hq_rm_dasboard.html',
-        wl2020=in_progress_matches[in_progress_matches['match_type'] == 'WL2020'],
-        el2020=in_progress_matches[in_progress_matches['match_type'] == 'EL2020'],
-        wl2020_960=in_progress_matches[in_progress_matches['match_type'] == 'Chess960 WL2020'])
+
+    leagues = in_progress_matches['match_type'].unique()
+
+    return render_template('tu_hq_rm_dasboard.html', in_progress_matches=in_progress_matches, leagues=leagues)
 
 
 @dashboards_bp.route('/team_dnipro_dashboard/')
