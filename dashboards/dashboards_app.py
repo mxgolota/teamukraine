@@ -89,3 +89,14 @@ def crimea_reg_dashboard():
 
     matches = pd.DataFrame(reg_matches_result, columns=reg_matches_columns)
     return render_template('tu_hq_reg_dashboard.html', matches=matches)
+
+
+@dashboards_bp.route('/tu_best_daily_players_dashboard/')
+def tu_best_daily_players_dashboard():
+    with engine.connect() as conn:
+        result = conn.execute("call tu_best_daily_players_dashboard")
+        best_players_result = [row for row in result]
+        best_players_columns = result.keys()
+
+    best_players = pd.DataFrame(best_players_result, columns=best_players_columns)
+    return render_template('tu_best_daily_players_dashboard.html', best_players=best_players)

@@ -1,0 +1,35 @@
+{% extends "dashboards.html" %}
+{% block content %}
+
+<table data-toggle="table" class="table table-bordered table-hover table-sm">
+    <thead>
+        <tr class="text-center">
+            <td class="align-middle">#</td>
+            <td class="align-middle">Гравець</td>
+            <td class="align-middle">Рейтинг</td>
+            <td class="align-middle">Очки загалом</td>
+            <td class="align-middle">Очки WL2020</td>
+            <td class="align-middle">Очки WL2020 (960)</td>
+            <td class="align-middle">Очки EL2020</td>
+            <td class="align-middle">Очки TMCL2020</td>
+            <td class="align-middle">Очки 1WL2020</td>
+        </tr>
+    </thead>
+    <tbody>
+    {% for index, row in best_players.iterrows(): %}
+        <tr class="text-center align-middle">
+            <td>{{ index+1 }}</td>
+            <td>{{ row['our_username'] }}</td>
+            <td>{{ row['chess_daily_rating'] | int }}</td>
+            <td>{{ row['score_total'] }}</td>
+            <td>{{ row['score_WL2020'] }}</td>
+            <td>{{ row['score_WL2020_960'] }}</td>
+            <td>{{ row['score_EL2020'] }}</td>
+            <td>{{ row['score_TMCL2020'] }}</td>
+            <td>{{ row['score_1WL2020'] }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+
+{% endblock %}
