@@ -1,18 +1,29 @@
 {% extends "dashboards.html" %}
 {% block content %}
 
-<table data-toggle="table" class="table table-bordered table-hover table-sm">
+<script src="https://unpkg.com/tableexport.jquery.plugin/tableExport.min.js"></script>
+<script src="https://unpkg.com/tableexport.jquery.plugin/libs/js-xlsx/xlsx.core.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.15.5/dist/extensions/export/bootstrap-table-export.min.js"></script>
+
+<button id="exporttable" class="btn btn-primary">Export</button>
+<table
+        id="best_players"
+        data-toggle="table"
+        data-sortable="true"
+        data-show-export="true"
+        class="table table-bordered table-hover table-sm">
     <thead>
         <tr class="text-center">
-            <td class="align-middle">#</td>
-            <td class="align-middle">Гравець</td>
-            <td class="align-middle">Рейтинг</td>
-            <td class="align-middle">Очки загалом</td>
-            <td class="align-middle">Очки WL2020</td>
-            <td class="align-middle">Очки WL2020 (960)</td>
-            <td class="align-middle">Очки EL2020</td>
-            <td class="align-middle">Очки TMCL2020</td>
-            <td class="align-middle">Очки 1WL2020</td>
+            <th class="align-middle" data-sortable="true">#</th>
+            <th class="align-middle" data-sortable="true">Гравець</th>
+            <th class="align-middle" data-sortable="true">Рейтинг</th>
+            <th class="align-middle" data-sortable="true">Очки загалом</th>
+            <th class="align-middle" data-sortable="true">Очки WL2020</th>
+            <th class="align-middle" data-sortable="true">Очки WL2020 (960)</th>
+            <th class="align-middle" data-sortable="true">Очки EL2020</th>
+            <th class="align-middle" data-sortable="true">Очки TMCL2020</th>
+            <th class="align-middle" data-sortable="true">Очки 1WL2020</th>
         </tr>
     </thead>
     <tbody>
@@ -31,5 +42,17 @@
     {% endfor %}
     </tbody>
     </table>
+
+<script>
+
+$(function() {
+$("#exporttable").click(function(e){
+        $("table").tableExport({
+            fileName:"ololosha",
+            type: "xlsx"
+        });
+    });
+});
+</script>
 
 {% endblock %}
