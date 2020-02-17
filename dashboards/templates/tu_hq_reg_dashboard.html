@@ -6,7 +6,7 @@
     {% if row['our_math_wait_score'] < row['enemy_math_wait_score'] %}
     <thead style="background-color:#fdb9c8;"  data-toggle="collapse" data-target="#collapse_data" aria-expanded="false" aria-controls="collapse_data">
     {% else %}
-    <thead data-toggle="collapse" data-target="#collapse_data" aria-expanded="false" aria-controls="collapse_data">
+    <thead  data-toggle="collapse" data-target="#collapse_data_{{ row['match_id'] }}" aria-expanded="false" aria-controls="collapse_data_{{ row['match_id'] }}">
     {% endif %}
         <tr>
             <td class="text-center" style="width:25%"><img src="/static/{{ row['our_team_id'] }}.png" width="25"> {{ row['our_team_name'] }}</td>
@@ -22,8 +22,34 @@
             <td class="text-center" style="width:25%"><img src="/static/{{ row['enemy_team_id'] }}.png" width="25"> {{ row['enemy_team_name'] }}</td>
         </tr>
         </thead>
+    <tbody class="collapse multi-collapse" id="collapse_data_{{ row['match_id'] }}">
+        <tr>
+            <td colspan="5">Потенційні таймутники</td>
+        </tr>
+        <tr class="align-middle">
+            <td class="text-center align-middle">Нік</td>
+            <td class="text-center align-middle">Рейтинг</td>
+            <td class="text-center align-middle">Дошка</td>
+            <td class="text-center align-middle">% таймаутів</td>
+            <td class="text-center align-middle">К-сть таймаутів в офф. матчах 2020 року</td>
+        </tr>
+        {% for index, row in timeouts[timeouts['match_id'] == row['match_id']].iterrows(): %}
+        <tr>
+            <td class="text-center"><a href="{{ row['url'] }}">{{ row['username'] }}</a></td>
+            <td class="text-center">{{ row['rating'] }}</td>
+            <td class="text-center">{{ row['board_id'] }}</td>
+            <td class="text-center">{{ row['chess_daily_timeout_percent'] }}</td>
+            {% if row['timeouts'] > 0 %}
+                <td class="text-center bg-warning">{{ row['timeouts'] }}</td>
+            {% else %}
+                <td class="text-center">{{ row['timeouts'] }}</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
 
 {% endfor %}
     </table>
+
+<a class="btn btn-dark btn-sm" href="{{ url_for('dashboards_bp.tu_hq_reg_dashboard') }}" target="_blank">Повний розмір</a>
 
 {% endblock %}
