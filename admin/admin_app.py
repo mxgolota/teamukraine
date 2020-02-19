@@ -69,7 +69,7 @@ def rep_clubs_membership_changes():
         end_date = form.end_date.data.date()
 
         if begin_date <= date(2019, 10, 2):
-            flash('Дані по зміні складу почали збиратися з 3 жовтня 2019', category='danger')
+            flash('Дані за зміною складу збираються з 3 жовтня 2019', category='danger')
 
     with engine.connect() as conn:
         result = conn.execute("call usp_rep_clubs_membership_changes(%s, %s, %s)", (team_id, begin_date, end_date))
