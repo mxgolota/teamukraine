@@ -27,11 +27,10 @@ def team_dnipro_dashboard():
         in_progress_matches_columns = result.keys()
 
     in_progress_matches = pd.DataFrame(in_progress_matches_result, columns=in_progress_matches_columns)
-    return render_template(
-        'team_dnipro_dashboard.html',
-        ecl2020=in_progress_matches[in_progress_matches['match_type'] == 'ECL2020'],
-        altw=in_progress_matches[in_progress_matches['match_type'] == 'All around the World'],
-        other=in_progress_matches[in_progress_matches['match_type'] == 'Other'],)
+
+    leagues = in_progress_matches['match_type'].unique()
+
+    return render_template('team_dnipro_dashboard.html', in_progress_matches=in_progress_matches, leagues=leagues)
 
 
 @dashboards_bp.route('/tu_hq_reg_dashboard/')
