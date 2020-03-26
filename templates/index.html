@@ -7,7 +7,7 @@
     <div class="row">
         {% for event in last_events %}
         <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-            <div class="card">
+            <div class="card {% if event['important'] == 1 %} border-success {% endif %}">
                 {% if event['event_picture'] is not none: %}
                 <img src="/static/events/{{ event['event_picture'] }}" class="card-img-top">
                 {% endif %}

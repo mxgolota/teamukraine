@@ -31,7 +31,6 @@
             <td class="text-center align-middle">Рейтинг</td>
             <td class="text-center align-middle">Дошка</td>
             <td class="text-center align-middle">% таймаутів</td>
-            <td class="text-center align-middle">К-сть таймаутів в офф. матчах 2020 року</td>
         </tr>
         {% for index, row in timeouts[timeouts['match_id'] == row['match_id']].iterrows(): %}
         <tr>
@@ -39,17 +38,12 @@
             <td class="text-center">{{ row['rating'] }}</td>
             <td class="text-center">{{ row['board_id'] }}</td>
             <td class="text-center">{{ row['chess_daily_timeout_percent'] }}</td>
-            {% if row['timeouts'] > 0 %}
-                <td class="text-center bg-warning">{{ row['timeouts'] }}</td>
-            {% else %}
-                <td class="text-center">{{ row['timeouts'] }}</td>
-            {% endif %}
         </tr>
         {% endfor %}
 
 {% endfor %}
     </table>
 
-<a class="btn btn-dark btn-sm" href="{{ url_for('dashboards_bp.tu_hq_reg_dashboard') }}" target="_blank">Повний розмір</a>
+<a class="btn btn-dark btn-sm" href="{{ url_for('dashboards_bp.kyiv_reg_dashboard') }}" target="_blank">Повний розмір</a>
 
 {% endblock %}

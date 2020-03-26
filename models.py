@@ -59,6 +59,7 @@ class Events(Base):
     event_description = Column(String)
     event_picture = Column(String)
     event_date = Column(DateTime)
+    important = Column(Integer)
     submits = relationship('Event_User', backref='chess_events', lazy='dynamic')
 
 
