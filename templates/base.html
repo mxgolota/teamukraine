@@ -50,12 +50,14 @@
 				<li class="nav-item dropdown">
 					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Турніри</a>
 					<div class="dropdown-menu">
-						<a class="dropdown-item" href = "{{ url_for('lcwl_s5_main') }}">LCWL S5 (кращі гравці) <span class="text-danger font-weight-light">(NEW!)</span></a>
-						<a class="dropdown-item" href = "{{ url_for('tu_best_daily_players_dashboard') }}">Daily 2020 (кращі гравці) <span class="text-danger font-weight-light">(NEW!)</span></a>
-						<a class="dropdown-item" href = "{{ url_for('lcwl_main') }}">LCWL S4 (кращі гравці)</a>
-                  		<a class="dropdown-item" href = "{{ url_for('lcwl_u1600') }}">LCWL U1600 (кращі гравці)</a>
-						<a class="dropdown-item" href = "{{ url_for('ucc2019') }}">UCC 2019</a>
-						<a class="dropdown-item" href = "{{ url_for('ucc2019_bullet_rapid') }}">UCC 2019: Bullet & Rapid</a>
+						<a class="dropdown-item" href = "{{ url_for('tournaments_bp.ucc2020_daily') }}">UCC 2020: Daily <span class="text-danger font-weight-light">(NEW!)</span></a>
+						<a class="dropdown-item" href = "{{ url_for('tournaments_bp.lcwl_s5_u1600') }}">LCWL S5 U1600 (кращі гравці)<span class="text-danger font-weight-light">(NEW!)</span></a>
+						<a class="dropdown-item" href = "{{ url_for('tournaments_bp.lcwl_s5_main') }}">LCWL S5 (кращі гравці)</a>
+						<a class="dropdown-item" href = "{{ url_for('tu_best_daily_players_dashboard') }}">Daily 2020 (кращі гравці)</a>
+						<a class="dropdown-item" href = "{{ url_for('tournaments_bp.lcwl_main') }}">LCWL S4 (кращі гравці)</a>
+                  		<a class="dropdown-item" href = "{{ url_for('tournaments_bp.lcwl_u1600') }}">LCWL U1600 (кращі гравці)</a>
+						<a class="dropdown-item" href = "{{ url_for('tournaments_bp.ucc2019') }}">UCC 2019</a>
+						<a class="dropdown-item" href = "{{ url_for('tournaments_bp.ucc2019_bullet_rapid') }}">UCC 2019: Bullet & Rapid</a>
 					</div>
 				</li>
 				<li class="nav-item">

@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>UCC 2020 Daily</h2>
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active"
+       id="tournamenttable-tab"
+       data-toggle="tab"
+       href="#tournamenttable"
+       role="tab"
+       aria-controls="tournamenttable"
+       aria-selected="true">Турнірна таблиця</a>
+  </li>
+     <li class="nav-item">
+    <a class="nav-link" id="rounds-tab" data-toggle="tab" href="#rounds" role="tab" aria-controls="rounds" aria-selected="false">Раунди</a>
+  </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="tournamenttable" role="tabpanel" aria-labelledby="tournamenttable-tab">
+      <table class="align-middle text-center table table-bordered table-hover">
+          <thead class="thead-light">
+          <tr>
+              <th>#</th>
+              <th>Команда</th>
+              <th>Очки</th>
+              <th>Матчів</th>
+              <th>Кількість загранних гравців</th>
+              <th>Перемог</th>
+              <th>Нічиї</th>
+              <th>Програші</th>
+              <th>Очки гравців</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for index, row in live_standings.iterrows(): %}
+          <tr>
+              <td>{{ row['rnk'] }} </td>
+              <td><a href="{{ url_for('clubs_bp.club_index', club_id = row['team_id']) }}" >{{ row['team'] }}</a>
+                  <img style="max-width:30px;" src="/static/{{ row['team_id'] }}.png">
+              </td>
+              <td>{{ row['score'] }} </td>
+              <td>{{ row['matches_count'] }} </td>
+              <td>{{ row['players_count'] }} </td>
+              <td>{{ row['wins'] }} </td>
+              <td>{{ row['draws'] }} </td>
+              <td>{{ row['lost'] }} </td>
+              <td>{{ row['points'] }} </td>
+          </tr>
+          {% endfor %}
+          </tbody>
+      </table>
+  </div>
+
+<div class="tab-pane fade" id="rounds" role="tabpanel" aria-labelledby="rounds-tab">
+{% for i in rounds_list %}
+<h6 class="text-left">Раунд {{ i }}</h6>
+<table class="table table-bordered table-hover table-sm">
+{% for index, row in rounds[rounds['round_id'] == i].iterrows(): %}
+    <thead class="thead-light" data-toggle="collapse" data-target="#collapse_data_{{ row['match_id'] }}" aria-expanded="false" aria-controls="collapse_data_{{ row['match_id'] }}">
+        <tr>
+            <th class="text-center align-middle" style="width:32%"><img src="/static/{{ row['team1_id'] }}.png" width="25"> {{ row['team1_name'] }}</th>
+            <th class="text-center align-middle" style="width:15%"> {{ row['team1_score'] }}</th>
+            <th class="text-center align-middle" style="width:6%">VS</th>
+            <th class="text-center align-middle" style="width:15%"> {{ row['team2_score'] }}</th>
+            <th class="text-center align-middle" style="width:32%"><img src="/static/{{ row['team2_id'] }}.png" width="25"> {{ row['team2_name'] }}</th>
+        </tr>
+        </thead>
+    <tbody class="collapse multi-collapse" id="collapse_data_{{ row['match_id'] }}">
+        <tr>
+            <td class="text-center align-middle">Посилання</td>
+            <td colspan="4"><a href="{{ row['url'] }}" target="_blank">{{ row['url'] }}</a></td>
+        </tr>
+        <tr>
+            <td class="text-center align-middle">Завершено</td>
+            <td colspan="4">
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: {{ (100*row['percent_done']|float) }}%;" aria-valuenow="{{ ((row['team1_score'] + row['team2_score']))|int }}" aria-valuemin="0" aria-valuemax="{{ 2*row['boards'] }}">
+                        <span class="text-dark font-weight-bold">{{ ((row['team1_score'] + row['team2_score']))|int }} із {{ 2*row['boards'] }}  ({{ '%0.2f'|format(100*row['percent_done']|float) }} %)</span>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-center align-middle">{{ row['team1_games_won'] }}</td>
+            <td class="text-center align-middle" colspan="3">Виграні ігри</td>
+            <td class="text-center align-middle">{{ row['team2_games_won'] }}</td>
+        </tr>
+        <tr>
+            <td class="text-center align-middle">{{ row['team1_games_drawn'] }}</td>
+            <td class="text-center align-middle" colspan="3">Нічийні ігри</td>
+            <td class="text-center align-middle">{{ row['team2_games_drawn'] }}</td>
+        </tr>
+        <tr>
+            <td class="text-center align-middle">{{ row['team1_games_lost'] }}</td>
+            <td class="text-center align-middle" colspan="3">Програні ігри</td>
+            <td class="text-center align-middle">{{ row['team2_games_lost'] }}</td>
+        </tr>
+        <tr>
+            <td class="text-center align-middle">{{ row['team1_games_lost_on_timeout'] }}</td>
+            <td class="text-center align-middle" colspan="3">Програні ігри за часом</td>
+            <td class="text-center align-middle">{{ row['team2_games_lost_on_timeout'] }}</td>
+        </tr>
+     <tr>
+            <td class="text-center align-middle">{{ row['team1_games_lost_on_closed'] }}</td>
+            <td class="text-center align-middle" colspan="3">Програні через блокування</td>
+            <td class="text-center align-middle">{{ row['team2_games_lost_on_closed'] }}</td>
+        </tr>
+        </tbody>
+
+{% endfor %}
+    </table>
+{% endfor %}
+</div>
+    </div>
+
+{% endblock %}
+
+
+

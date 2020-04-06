@@ -7,8 +7,10 @@
 {% for index, row in in_progress_matches[in_progress_matches['match_type'] == league].iterrows(): %}
     <thead  data-toggle="collapse" data-target="#collapse_data_{{ row['match_id'] }}" aria-expanded="false" aria-controls="collapse_data_{{ row['match_id'] }}">
         <tr>
-            <td class="text-center align-middle" style="width:32%"><img src="/static/{{ row['team1_id'] }}.png" width="25"> {{ row['team1_name'] }}</td>
-            <td class="text-center align-middle" style="width:15%"> {{ row['team1_score'] }} <br> <small class="text-muted"> ( {{ '%0.1f'|format(row['team1_score_forecast']) }} ) </small></td>
+            <td class="text-center align-middle" style="width:32%"><img src="/static/{{ row['team1_id'] }}.png" width="25">
+                <small>{{ row['team1_name'] }}</small>
+            </td>
+            <td class="text-center align-middle" style="width:15%"> {{ row['team1_score'] }} </td>
             <td class="text-center align-middle" style="width:6%">
                 {% if row['status'] == 'registration' %}
                 <p class="text-danger font-weight-bold small">
@@ -24,8 +26,10 @@
                 </p>
                 {% endif %}
             </td>
-            <td class="text-center align-middle" style="width:15%"> {{ row['team2_score'] }} <br> <small class="text-muted"> ( {{ '%0.1f'|format(row['team2_score_forecast']) }} ) </small></td>
-            <td class="text-center align-middle" style="width:32%"><img src="/static/{{ row['team2_id'] }}.png" width="25"> {{ row['team2_name'] }}</td>
+            <td class="text-center align-middle" style="width:15%"> {{ row['team2_score'] }}</td>
+            <td class="text-center align-middle" style="width:32%"><img src="/static/{{ row['team2_id'] }}.png" width="25">
+                <small>{{ row['team2_name'] }}</small>
+            </td>
         </tr>
         </thead>
     <tbody class="collapse multi-collapse" id="collapse_data_{{ row['match_id'] }}">

@@ -3,7 +3,6 @@ from forms import RegisterForm, LoginForm
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import pandas as pd
-import numpy as np
 import uuid
 import requests as r
 import json
@@ -14,6 +13,7 @@ from events.events_app import events_bp
 from admin.admin_app import admin_bp
 from clubs.clubs_app import clubs_bp
 from dashboards.dashboards_app import dashboards_bp
+from tournaments.tournaments_app import tournaments_bp
 
 
 app = Flask(__name__)
@@ -27,6 +27,7 @@ with app.app_context():
     app.register_blueprint(admin_bp)
     app.register_blueprint(clubs_bp)
     app.register_blueprint(dashboards_bp)
+    app.register_blueprint(tournaments_bp)
 
 
 @app.teardown_appcontext
@@ -46,186 +47,6 @@ def index():
     return render_template("index.html", last_events=last_events)
 
 
-@app.route("/tournaments/lcwl_u1600")
-def lcwl_u1600():
-    with engine.connect() as conn:
-        tmp = conn.execute("call usp_stat_lcwl_u1600")
-        result = [row for row in tmp]
-        columns = tmp.keys()
-
-    points = pd.DataFrame(result, columns=columns)
-    max_points = pd.DataFrame(result, columns=columns)
-    points = pd.pivot_table(points, columns=['club_2', 'round_id'], index=['player_1', 'chess_blitz_rating'],
-                            values='team1_player_score') \
-        .reset_index()
-    cols = [('player_1', ''), ('chess_blitz_rating', '')] + sorted(list(points.columns)[2:], key=lambda x: x[1])
-    points = points.reindex(columns=cols).reset_index(drop=True)
-
-    points['Total'] = points[list(points.columns[2:])].sum(axis=1)
-    rivals = points.columns[2:]
-    points = points.sort_values(by=['Total'], ascending=False)
-
-    max_points = pd.pivot_table(max_points, columns=['club_2', 'round_id'], index=['player_1', 'chess_blitz_rating'],
-                                values='team1_player_max_possible_score').reset_index()
-    max_points = max_points.reindex(columns=cols).reset_index(drop=True)
-
-    max_points['Total_max'] = max_points[list(max_points.columns[2:])].sum(axis=1)
-
-    points = pd.merge(points, max_points[['Total_max', 'player_1']], on='player_1', how='left')
-    points['points_percentage'] = 100 * points['Total'] / points['Total_max']
-    points = points.sort_values(by=['Total', 'points_percentage'], ascending=False)
-    points['Place'] = np.arange(1, len(points) + 1)
-
-    return render_template("lcwl_best_players.html", points=points, rivals=rivals)
-
-
-@app.route("/tournaments/lcwl_main")
-def lcwl_main():
-    with engine.connect() as conn:
-        tmp = conn.execute("call usp_stat_lcwl_main")
-        result = [row for row in tmp]
-        columns = tmp.keys()
-
-    points = pd.DataFrame(result, columns=columns)
-    max_points = pd.DataFrame(result, columns=columns)
-    points = pd.pivot_table(points, columns=['club_2', 'round_id'], index=['player_1', 'chess_blitz_rating'],
-                            values='team1_player_score') \
-        .reset_index()
-    cols = [('player_1', ''), ('chess_blitz_rating', '')] + sorted(list(points.columns)[2:], key=lambda x: x[1])
-    points = points.reindex(columns=cols).reset_index(drop=True)
-
-    points['Total'] = points[list(points.columns[2:])].sum(axis=1)
-    rivals = points.columns[2:]
-    points = points.sort_values(by=['Total'], ascending=False)
-
-    max_points = pd.pivot_table(max_points, columns=['club_2', 'round_id'], index=['player_1', 'chess_blitz_rating'],
-                            values='team1_player_max_possible_score').reset_index()
-    max_points = max_points.reindex(columns=cols).reset_index(drop=True)
-
-    max_points['Total_max'] = max_points[list(max_points.columns[2:])].sum(axis=1)
-
-    points = pd.merge(points, max_points[['Total_max', 'player_1']], on='player_1', how='left')
-    points['points_percentage'] = 100*points['Total']/points['Total_max']
-    points = points.sort_values(by=['Total', 'points_percentage'], ascending=False)
-    points['Place'] = np.arange(1, len(points) + 1)
-
-    return render_template("lcwl_best_players.html", points=points, rivals=rivals)
-
-
-@app.route("/tournaments/lcwl_s5_main")
-def lcwl_s5_main():
-    with engine.connect() as conn:
-        tmp = conn.execute("call usp_stat_lcwl_s5_main")
-        result = [row for row in tmp]
-        columns = tmp.keys()
-
-    points = pd.DataFrame(result, columns=columns)
-    max_points = pd.DataFrame(result, columns=columns)
-    points = pd.pivot_table(points, columns=['club_2', 'round_id'], index=['player_1', 'chess_blitz_rating'],
-                            values='team1_player_score') \
-        .reset_index()
-    cols = [('player_1', ''), ('chess_blitz_rating', '')] + sorted(list(points.columns)[2:], key=lambda x: x[1])
-    points = points.reindex(columns=cols).reset_index(drop=True)
-
-    points['Total'] = points[list(points.columns[2:])].sum(axis=1)
-    rivals = points.columns[2:]
-    points = points.sort_values(by=['Total'], ascending=False)
-
-    max_points = pd.pivot_table(max_points, columns=['club_2', 'round_id'], index=['player_1', 'chess_blitz_rating'],
-                            values='team1_player_max_possible_score').reset_index()
-    max_points = max_points.reindex(columns=cols).reset_index(drop=True)
-
-    max_points['Total_max'] = max_points[list(max_points.columns[2:])].sum(axis=1)
-
-    points = pd.merge(points, max_points[['Total_max', 'player_1']], on='player_1', how='left')
-    points['points_percentage'] = 100*points['Total']/points['Total_max']
-    points = points.sort_values(by=['Total', 'points_percentage'], ascending=False)
-    points['Place'] = np.arange(1, len(points) + 1)
-
-    return render_template("lcwl_best_players.html", points=points, rivals=rivals)
-
-
-@app.route("/tournaments/ucc2019")
-def ucc2019():
-    with engine.connect() as conn:
-        result = conn.execute("call usp_stat_ucc2019_best_players")
-        best_players_result = [row for row in result]
-        best_players_columns = result.keys()
-
-    with engine.connect() as conn:
-        result = conn.execute("call usp_stat_ucc2019_rounds")
-        rounds_result = [row for row in result]
-        rounds_result_columns = result.keys()
-
-    best_players = pd.DataFrame(best_players_result, columns=best_players_columns)
-    rounds = pd.DataFrame(rounds_result,columns=rounds_result_columns)
-    first_teams = rounds[['round_id', 'match_id', 'team1_name', 'team1_result', 'team2_name']]
-    first_teams = first_teams.rename(columns={"team1_name": "team_name", "team1_result": "team_result", "team2_name": "opponent_name"})
-    second_teams = rounds[['round_id', 'match_id', 'team2_name', 'team2_result', 'team1_name']]
-    second_teams = second_teams.rename(columns={"team2_name": "team_name", "team2_result": "team_result", "team1_name": "opponent_name"})
-    tournament_table = pd.concat([first_teams, second_teams]).reset_index()
-
-    tournament_table = pd.pivot_table(tournament_table, columns=['opponent_name'], index=['team_name'], values='team_result').reset_index()
-
-    tournament_table['Загалом'] = tournament_table.sum(axis=1)
-    tournament_table.reset_index(inplace=True)
-    tournament_table.sort_values(by=['Загалом'], ascending=False, inplace=True)
-
-    return render_template("ucc2019.html", best_players=best_players, rounds=rounds, tournament_table=tournament_table)
-
-
-@app.route("/tournaments/ucc2019_bullet_rapid")
-def ucc2019_bullet_rapid():
-    with engine.connect() as conn:
-        result = conn.execute("call usp_stat_ucc2019_rapid_bullet_best_player")
-        best_players_result = [row for row in result]
-        best_players_columns = result.keys()
-
-    with engine.connect() as conn:
-        result = conn.execute("call usp_stat_ucc2019_rapid_bullet_rounds")
-        rounds_result = [row for row in result]
-        rounds_result_columns = result.keys()
-
-    best_players = pd.DataFrame(best_players_result, columns=best_players_columns)
-    rounds = pd.DataFrame(rounds_result, columns=rounds_result_columns)
-
-    groupA_rounds = rounds.loc[rounds['team1_id'].isin([84300, 42800, 67918, 57502, 71728, 52452])
-                               & rounds['round_id'].isin([1, 2, 3, 4, 5])]
-    groupB_rounds = rounds.loc[rounds['team1_id'].isin([71066, 42164, 84302, 27634, 61104, 72704])
-                               & rounds['round_id'].isin([1, 2, 3, 4, 5])]
-
-    groupA_first_teams = groupA_rounds[['round_id', 'match_id', 'team1_name', 'team1_result', 'team2_name']]
-    groupA_first_teams = groupA_first_teams.rename(columns={"team1_name": "team_name", "team1_result": "team_result", "team2_name": "opponent_name"})
-    groupA_second_teams = groupA_rounds[['round_id', 'match_id', 'team2_name', 'team2_result', 'team1_name']]
-    groupA_second_teams = groupA_second_teams.rename(columns={"team2_name": "team_name", "team2_result": "team_result", "team1_name": "opponent_name"})
-    groupA_tournament_table = pd.concat([groupA_first_teams, groupA_second_teams]).reset_index()
-
-    groupA_tournament_table = pd.pivot_table(groupA_tournament_table, columns=['opponent_name'], index=['team_name'], values='team_result', aggfunc='sum').reset_index()
-
-    groupA_tournament_table['Загалом'] = groupA_tournament_table.sum(axis=1)
-    groupA_tournament_table.reset_index(inplace=True)
-    groupA_tournament_table.sort_values(by=['Загалом'], ascending=False, inplace=True)
-
-    groupB_first_teams = groupB_rounds[['round_id', 'match_id', 'team1_name', 'team1_result', 'team2_name']]
-    groupB_first_teams = groupB_first_teams.rename(
-        columns={"team1_name": "team_name", "team1_result": "team_result", "team2_name": "opponent_name"})
-    groupB_second_teams = groupB_rounds[['round_id', 'match_id', 'team2_name', 'team2_result', 'team1_name']]
-    groupB_second_teams = groupB_second_teams.rename(
-        columns={"team2_name": "team_name", "team2_result": "team_result", "team1_name": "opponent_name"})
-    groupB_tournament_table = pd.concat([groupB_first_teams, groupB_second_teams]).reset_index()
-
-    groupB_tournament_table = pd.pivot_table(groupB_tournament_table, columns=['opponent_name'], index=['team_name'],
-                                             values='team_result', aggfunc='sum').reset_index()
-
-    groupB_tournament_table['Загалом'] = groupB_tournament_table.sum(axis=1)
-    groupB_tournament_table.reset_index(inplace=True)
-    groupB_tournament_table.sort_values(by=['Загалом'], ascending=False, inplace=True)
-
-    return render_template("ucc2019_bullet_rapid.html", best_players=best_players, rounds=rounds,
-                           groupA_tournament_table=groupA_tournament_table,
-                           groupB_tournament_table=groupB_tournament_table)
-
-
 @app.route('/tu_best_daily_players_2020/')
 def tu_best_daily_players_dashboard():
     with engine.connect() as conn:
@@ -235,7 +56,6 @@ def tu_best_daily_players_dashboard():
 
     best_players = pd.DataFrame(best_players_result, columns=best_players_columns)
     return render_template('tu_best_daily_players_dashboard.html', best_players=best_players)
-
 
 
 @app.route('/register', methods=['GET', 'POST'])

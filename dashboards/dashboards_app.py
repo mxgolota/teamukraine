@@ -67,6 +67,23 @@ def kyiv_reg_dashboard():
     return render_template('kyiv_reg_dashboard.html', matches=matches, timeouts=timeouts)
 
 
+@dashboards_bp.route('/crimea_hq_reg_dashboard/')
+def crimea_reg_dashboard():
+    with engine.connect() as conn:
+        result = conn.execute("call crimea_reg_matches_dashboard")
+        reg_matches_result = [row for row in result]
+        reg_matches_columns = result.keys()
+
+    with engine.connect() as conn:
+        result = conn.execute("call crimea_reg_matches_dashboard_timeouts")
+        timeouts_result = [row for row in result]
+        timeouts_columns = result.keys()
+
+    matches = pd.DataFrame(reg_matches_result, columns=reg_matches_columns)
+    timeouts = pd.DataFrame(timeouts_result, columns=timeouts_columns)
+    return render_template('crimea_reg_dashboard.html', matches=matches, timeouts=timeouts)
+
+
 @dashboards_bp.route('/tu_best_daily_players_dashboard/')
 def tu_best_daily_players_dashboard():
     with engine.connect() as conn:
@@ -76,3 +93,8 @@ def tu_best_daily_players_dashboard():
 
     best_players = pd.DataFrame(best_players_result, columns=best_players_columns)
     return render_template('tu_best_daily_players_dashboard.html', best_players=best_players)
+
+
+@dashboards_bp.route('/team_dnipro_carousel/')
+def team_dnipro_carousel():
+    return render_template('team_dnipro_carousel.html')

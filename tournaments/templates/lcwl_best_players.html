@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+
+<table class="table table-striped table-bordered">
+    <thead>
+    <tr>
+        <td>#</td>
+        <td>Гравець</td>
+        <td>Загалом очок</td>
+        <td>% очок (від загальноможливих)</td>
+        <td>Бліц-рейтинг</td>
+        {% for i in range(rivals|length-1) %}
+        <td>{{ rivals[i][0] }}</td>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for index, row in points.iterrows(): %}
+    <tr>
+        <td>{{ row['Place'][0] }}</td>
+        <td><a href="https://www.chess.com/member/{{ row['player_1'][0] }}">{{ row['player_1'][0] }}</a></td>
+        <td>{{ row[rivals[rivals|length-1]] }}</td>
+        <td>{{ "%.2f" | format(row['points_percentage'][0]) }}</td>
+        <td>{{ row['chess_blitz_rating'][0] }}</td>
+        {% for i in range(rivals|length-1) %}
+            {% if row[rivals[i]]|string != 'nan' %}
+            <td>{{ row[rivals[i]] }}</td>
+            {% else %}
+            <td></td>
+            {% endif %}
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+
+{% endblock %}
+
+
