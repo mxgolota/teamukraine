@@ -247,3 +247,68 @@ def ucc2020_daily():
     #teams = pd.DataFrame(tournament_table['team'])
 
     return render_template("ucc2020_daily.html", live_standings=live_standings, rounds=rounds, rounds_list=rounds_list)
+
+
+@tournaments_bp.route("/green_chess_cup_3_4_grade")
+def green_chess_cup_3_4_grade():
+    with engine.connect() as conn:
+        tmp = conn.execute("call usp_stat_marathon_tournament_table (%s)", (1, ))
+        result = [row for row in tmp]
+        columns = tmp.keys()
+
+    points = pd.DataFrame(result, columns=columns)
+    rounds = sorted(points['round_id'].unique())
+
+    points = pd.pivot_table(points, columns=['round_id'], index=['username'], values=['points', 'tie_break'],
+                            aggfunc='sum') \
+        .reset_index()
+    points['Загалом'] = points['points'].sum(axis=1)
+    points['КБ'] = points['tie_break'].sum(axis=1)
+    points = points.sort_values(by=['Загалом', 'КБ'], ascending=(False, False)).reset_index()
+    points['rnk'] = points['КБ'].index + 1
+    points = points.fillna('')
+
+    return render_template("green_chess_cup_marathon.html", points=points, rounds=rounds)
+
+
+@tournaments_bp.route("/green_chess_cup_1_2_grade")
+def green_chess_cup_1_2_grade():
+    with engine.connect() as conn:
+        tmp = conn.execute("call usp_stat_marathon_tournament_table (%s)", (2, ))
+        result = [row for row in tmp]
+        columns = tmp.keys()
+
+    points = pd.DataFrame(result, columns=columns)
+    rounds = sorted(points['round_id'].unique())
+
+    points = pd.pivot_table(points, columns=['round_id'], index=['username'], values=['points', 'tie_break'],
+                            aggfunc='sum') \
+        .reset_index()
+    points['Загалом'] = points['points'].sum(axis=1)
+    points['КБ'] = points['tie_break'].sum(axis=1)
+    points = points.sort_values(by=['Загалом', 'КБ'], ascending=(False, False)).reset_index()
+    points['rnk'] = points['КБ'].index + 1
+    points = points.fillna('')
+
+    return render_template("green_chess_cup_marathon.html", points=points, rounds=rounds)
+
+
+@tournaments_bp.route("/green_chess_cup_1plus_grade")
+def green_chess_cup_1plus_grade():
+    with engine.connect() as conn:
+        tmp = conn.execute("call usp_stat_marathon_tournament_table (%s)", (3, ))
+        result = [row for row in tmp]
+        columns = tmp.keys()
+
+    points = pd.DataFrame(result, columns=columns)
+    rounds = sorted(points['round_id'].unique())
+
+    points = pd.pivot_table(points, columns=['round_id'], index=['username'], values=['points', 'tie_break'], aggfunc='sum') \
+        .reset_index()
+    points['Загалом'] = points['points'].sum(axis=1)
+    points['КБ'] = points['tie_break'].sum(axis=1)
+    points = points.sort_values(by=['Загалом', 'КБ'], ascending=(False, False)).reset_index()
+    points['rnk'] = points['КБ'].index + 1
+    points = points.fillna('')
+
+    return render_template("green_chess_cup_marathon.html", points=points, rounds=rounds)
