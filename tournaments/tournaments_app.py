@@ -244,8 +244,6 @@ def ucc2020_daily():
     rounds = pd.DataFrame(rounds_result, columns=rounds_columns)
     rounds_list = rounds['round_id'].unique().tolist()
 
-    #teams = pd.DataFrame(tournament_table['team'])
-
     return render_template("ucc2020_daily.html", live_standings=live_standings, rounds=rounds, rounds_list=rounds_list)
 
 
@@ -312,3 +310,32 @@ def green_chess_cup_1plus_grade():
     points = points.fillna('')
 
     return render_template("green_chess_cup_marathon.html", points=points, rounds=rounds)
+
+
+@tournaments_bp.route("/ucc2020_blitz")
+def ucc2020_blitz():
+    with engine.connect() as conn:
+        result = conn.execute("call usp_stat_ucc2020_blitz_best_players")
+        best_players_result = [row for row in result]
+        best_players_columns = result.keys()
+
+    with engine.connect() as conn:
+        result = conn.execute("call usp_stat_ucc2020_blitz_rounds")
+        rounds_result = [row for row in result]
+        rounds_result_columns = result.keys()
+
+    best_players = pd.DataFrame(best_players_result, columns=best_players_columns)
+    rounds = pd.DataFrame(rounds_result,columns=rounds_result_columns)
+    first_teams = rounds[['round_id', 'match_id', 'team1_name', 'team1_result', 'team2_name']]
+    first_teams = first_teams.rename(columns={"team1_name": "team_name", "team1_result": "team_result", "team2_name": "opponent_name"})
+    second_teams = rounds[['round_id', 'match_id', 'team2_name', 'team2_result', 'team1_name']]
+    second_teams = second_teams.rename(columns={"team2_name": "team_name", "team2_result": "team_result", "team1_name": "opponent_name"})
+    tournament_table = pd.concat([first_teams, second_teams]).reset_index()
+
+    tournament_table = pd.pivot_table(tournament_table, columns=['opponent_name'], index=['team_name'], values='team_result').reset_index()
+
+    tournament_table['Загалом'] = tournament_table.sum(axis=1)
+    tournament_table.reset_index(inplace=True)
+    tournament_table.sort_values(by=['Загалом'], ascending=False, inplace=True)
+
+    return render_template("ucc2019.html", best_players=best_players, rounds=rounds, tournament_table=tournament_table)
