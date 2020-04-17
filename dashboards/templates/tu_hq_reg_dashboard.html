@@ -37,12 +37,12 @@
   data: {
     labels: {{ '["{0}"]'.format('",  "'.join(mobilization_ukraine[(mobilization_ukraine['match_id'] == row['match_id'])]['fulldate'].tolist() )) | safe}},
     datasets: [{
-        data: {{ mobilization_ukraine['cnt_players'].tolist() }},
+        data: {{ mobilization_ukraine[mobilization_ukraine['match_id'] == row['match_id']]['cnt_players'].tolist() }},
         label: "Ukraine",
         borderColor: "#00f",
         fill: false
       },{
-        data: {{ mobilization_opponent['cnt_players'].tolist() }},
+        data: {{ mobilization_opponent[mobilization_opponent['match_id'] == row['match_id']]['cnt_players'].tolist() }},
         label: "Opponent",
         borderColor: "#f00",
         fill: false
