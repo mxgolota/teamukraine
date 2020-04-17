@@ -1,7 +1,8 @@
 {% extends "dashboards.html" %}
 {% block content %}
 
-<table class="table table-bordered table-hover table-sm">
+
+<table class="table table-bordered table-sm">
 {% for index, row in matches.iterrows(): %}
     {% if row['our_math_wait_score'] < row['enemy_math_wait_score'] %}
     <thead style="background-color:#fdb9c8;"  data-toggle="collapse" data-target="#collapse_data_{{ row['match_id'] }}" aria-expanded="false" aria-controls="collapse_data_{{ row['match_id'] }}">
@@ -23,6 +24,38 @@
         </tr>
         </thead>
     <tbody class="collapse multi-collapse" id="collapse_data_{{ row['match_id'] }}">
+    <tr>
+        <td colspan="5">Графік мобілізації</td>
+    </tr>
+    <tr>
+        <td colspan="5">
+            <div style="width: 90%; margin: 0 auto">
+		        <canvas id="{{ row['match_id'] }}"></canvas>
+                <script>
+		new Chart(document.getElementById( {{row['match_id'] }} ), {
+  type: 'line',
+  data: {
+    labels: {{ '["{0}"]'.format('",  "'.join(mobilization_ukraine[(mobilization_ukraine['match_id'] == row['match_id'])]['fulldate'].tolist() )) | safe}},
+    datasets: [{
+        data: {{ mobilization_ukraine['cnt_players'].tolist() }},
+        label: "Ukraine",
+        borderColor: "#00f",
+        fill: false
+      },{
+        data: {{ mobilization_opponent['cnt_players'].tolist() }},
+        label: "Opponent",
+        borderColor: "#f00",
+        fill: false
+      }
+    ]
+  },
+  options: {
+  }
+});
+	</script>
+	        </div>
+        </td>
+    </tr>
         <tr>
             <td colspan="5">Потенційні таймутники</td>
         </tr>
@@ -51,5 +84,7 @@
     </table>
 
 <a class="btn btn-dark btn-sm" href="{{ url_for('dashboards_bp.tu_hq_reg_dashboard') }}" target="_blank">Повний розмір</a>
+
+
 
 {% endblock %}

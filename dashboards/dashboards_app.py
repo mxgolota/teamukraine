@@ -45,9 +45,20 @@ def tu_hq_reg_dashboard():
         timeouts_result = [row for row in result]
         timeouts_columns = result.keys()
 
+    with engine.connect() as conn:
+        result = conn.execute("call team_ukraine_reg_matches_dashboard_mobilization")
+        mobilization_result = [row for row in result]
+        mobilization_columns = result.keys()
+
     matches = pd.DataFrame(reg_matches_result, columns=reg_matches_columns)
     timeouts = pd.DataFrame(timeouts_result, columns=timeouts_columns)
-    return render_template('tu_hq_reg_dashboard.html', matches=matches, timeouts=timeouts)
+    mobilization = pd.DataFrame(mobilization_result, columns=mobilization_columns)
+    mobilization_ukraine = mobilization[mobilization['team_name'] == 'Team Ukraine']
+    mobilization_opponent = mobilization[mobilization['team_name'] != 'Team Ukraine']
+    # {{ mobilization['fulldate'].tolist() }}
+    return render_template('tu_hq_reg_dashboard.html', matches=matches, timeouts=timeouts,
+                           mobilization_ukraine=mobilization_ukraine,
+                           mobilization_opponent=mobilization_opponent)
 
 
 @dashboards_bp.route('/kyiv_hq_reg_dashboard/')
