@@ -38,19 +38,58 @@
     labels: {{ '["{0}"]'.format('",  "'.join(mobilization_ukraine[(mobilization_ukraine['match_id'] == row['match_id'])]['fulldate'].tolist() )) | safe}},
     datasets: [{
         data: {{ mobilization_ukraine[mobilization_ukraine['match_id'] == row['match_id']]['cnt_players'].tolist() }},
-        label: "Ukraine",
+        label: "UKR players",
         borderColor: "#00f",
-        fill: false
+        fill: false,
+        yAxisID: 'y-axis-1',
+        cubicInterpolationMode: 'monotone'
       },{
         data: {{ mobilization_opponent[mobilization_opponent['match_id'] == row['match_id']]['cnt_players'].tolist() }},
-        label: "Opponent",
+        label: "Op. players",
         borderColor: "#f00",
-        fill: false
+        fill: false,
+        yAxisID: 'y-axis-1',
+      },{
+        data: {{ mobilization_ukraine[mobilization_ukraine['match_id'] == row['match_id']]['avg_rating'].tolist() }},
+        label: "UKR rating",
+        borderColor: "#00f",
+        fill: false,
+        borderDash: [5, 5],
+        yAxisID: 'y-axis-2',
+      },{
+        data: {{ mobilization_opponent[mobilization_opponent['match_id'] == row['match_id']]['avg_rating'].tolist() }},
+        label: "Op. rating ",
+        borderColor: "#f00",
+        fill: false,
+        borderDash: [5, 5],
+        yAxisID: 'y-axis-2',
       }
     ]
   },
   options: {
+    responsive: true,
+    legend: {
+        position: 'bottom',
+    },
+    scales: {
+						yAxes: [{
+							type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+							display: true,
+							position: 'left',
+							id: 'y-axis-1',
+						}, {
+							type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+							display: true,
+							position: 'right',
+							id: 'y-axis-2',
+
+							// grid line settings
+							gridLines: {
+								drawOnChartArea: false, // only want the grid lines for one axis to show up
+							},
+						}]
   }
+}
 });
 	</script>
 	        </div>

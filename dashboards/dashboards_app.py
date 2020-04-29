@@ -55,6 +55,10 @@ def tu_hq_reg_dashboard():
     mobilization = pd.DataFrame(mobilization_result, columns=mobilization_columns)
     mobilization_ukraine = mobilization[mobilization['team_name'] == 'Team Ukraine']
     mobilization_opponent = mobilization[mobilization['team_name'] != 'Team Ukraine']
+
+    mobilization_ukraine['avg_rating'] = mobilization_ukraine['avg_rating'].astype(int)
+    mobilization_opponent['avg_rating'] = mobilization_opponent['avg_rating'].astype(int)
+
     # {{ mobilization['fulldate'].tolist() }}
     return render_template('tu_hq_reg_dashboard.html', matches=matches, timeouts=timeouts,
                            mobilization_ukraine=mobilization_ukraine,
