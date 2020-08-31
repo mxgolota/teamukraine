@@ -115,6 +115,39 @@ def lcwl_s5_main():
     return render_template("lcwl_best_players.html", points=points, rivals=rivals)
 
 
+@tournaments_bp.route("/lcwl_s6_main")
+def lcwl_s6_main():
+    with engine.connect() as conn:
+        tmp = conn.execute("call usp_stat_lcwl_s6_main")
+        result = [row for row in tmp]
+        columns = tmp.keys()
+
+    points = pd.DataFrame(result, columns=columns)
+    max_points = pd.DataFrame(result, columns=columns)
+    points = pd.pivot_table(points, columns=['club_2', 'round_id'], index=['player_1', 'chess_blitz_rating'],
+                            values='team1_player_score') \
+        .reset_index()
+    cols = [('player_1', ''), ('chess_blitz_rating', '')] + sorted(list(points.columns)[2:], key=lambda x: x[1])
+    points = points.reindex(columns=cols).reset_index(drop=True)
+
+    points['Total'] = points[list(points.columns[2:])].sum(axis=1)
+    rivals = points.columns[2:]
+    points = points.sort_values(by=['Total'], ascending=False)
+
+    max_points = pd.pivot_table(max_points, columns=['club_2', 'round_id'], index=['player_1', 'chess_blitz_rating'],
+                            values='team1_player_max_possible_score').reset_index()
+    max_points = max_points.reindex(columns=cols).reset_index(drop=True)
+
+    max_points['Total_max'] = max_points[list(max_points.columns[2:])].sum(axis=1)
+
+    points = pd.merge(points, max_points[['Total_max', 'player_1']], on='player_1', how='left')
+    points['points_percentage'] = 100*points['Total']/points['Total_max']
+    points = points.sort_values(by=['Total', 'points_percentage'], ascending=False)
+    points['Place'] = np.arange(1, len(points) + 1)
+
+    return render_template("lcwl_best_players.html", points=points, rivals=rivals)
+
+
 @tournaments_bp.route("/lcwl_s5_u1600")
 def lcwl_s5_u1600():
     with engine.connect() as conn:
