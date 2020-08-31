@@ -110,6 +110,17 @@ def tu_best_daily_players_dashboard():
     return render_template('tu_best_daily_players_dashboard.html', best_players=best_players)
 
 
+@dashboards_bp.route('/tu_hq_players_count_dashboard/')
+def tu_hq_players_count_dashboard():
+    with engine.connect() as conn:
+        result = conn.execute("call usp_dashboards_Ukraine_vs_Russia_playersCount")
+        players_result = [row for row in result]
+        players_columns = result.keys()
+
+    players = pd.DataFrame(players_result, columns=players_columns)
+    return render_template('tu_hq_players_count_dashboard.html', players=players)
+
+
 @dashboards_bp.route('/team_dnipro_carousel/')
 def team_dnipro_carousel():
     return render_template('team_dnipro_carousel.html')

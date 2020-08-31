@@ -1,0 +1,103 @@
+{% extends "dashboards.html" %}
+{% block content %}
+
+<canvas id="players_count_chart"></canvas>
+                <script>
+		new Chart(document.getElementById("players_count_chart"), {
+  type: 'bar',
+  data: {
+    labels: {{ '["{0}"]'.format('",  "'.join(players[(players['club_id'] == 4339)]['fulldate'].tolist() )) | safe}},
+    datasets: [{
+        data: {{ players[players['club_id'] == 4339]['diff'].tolist() }},
+        label: "Ukraine",
+        backgroundColor: "#00f",
+        fill: false,
+        yAxisID: 'y-axis-1',
+        cubicInterpolationMode: 'monotone'
+      },{
+        data: {{ players[players['club_id'] == 4429]['diff'].tolist() }},
+        label: "Russia",
+        backgroundColor: "#f00",
+        fill: false,
+        yAxisID: 'y-axis-1',
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    title: {
+						display: true,
+						text: 'Players joined to team (daily)',
+						fontStyle: 'bold',
+						fontSize: 18,
+						fontColor: '#000'
+					},
+    legend: {
+        position: 'bottom',
+    },
+    scales: {
+						yAxes: [{
+							type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+							display: true,
+							position: 'left',
+							id: 'y-axis-1',
+							ticks: {
+                                min: 0
+                                }
+						}]
+  }
+}
+});
+	</script>
+
+
+
+<canvas id="players_count_chart2"></canvas>
+                <script>
+		new Chart(document.getElementById("players_count_chart2"), {
+  type: 'line',
+  data: {
+    labels: {{ '["{0}"]'.format('",  "'.join(players[(players['club_id'] == 4339)]['fulldate'].tolist() )) | safe}},
+    datasets: [{
+        data: {{ players[players['club_id'] == 4339]['players_cnt'].tolist() }},
+        label: "Ukraine",
+        borderColor: "#00f",
+        backgroundColor: "#00f",
+        fill: false,
+        yAxisID: 'y-axis-1',
+        cubicInterpolationMode: 'monotone'
+      },{
+        data: {{ players[players['club_id'] == 4429]['players_cnt'].tolist() }},
+        label: "Russia",
+        borderColor: "#f00",
+        backgroundColor: "#f00",
+        fill: false,
+        yAxisID: 'y-axis-1',
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    title: {
+						display: true,
+						text: 'Players in teams (daily)',
+						fontStyle: 'bold',
+						fontSize: 18,
+						fontColor: '#000'
+					},
+    legend: {
+        position: 'bottom',
+    },
+    scales: {
+						yAxes: [{
+							type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+							display: true,
+							position: 'left',
+							id: 'y-axis-1'
+						}]
+  }
+}
+});
+	</script>
+
+{% endblock %}
