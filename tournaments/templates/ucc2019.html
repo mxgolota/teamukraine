@@ -64,21 +64,21 @@
                   <img style="max-width:30px;" src="/static/{{ round['team1_id'] }}.png">
               </td>
               <td class="align-middle border border-secondary style="width: 10%">
-              <span class="font-weight-bold {% if round['team1_result'] == 1.0 %} text-success {% elif round['team1_result'] == 0.0 %} text-danger {% elif round['team1_result'] == 0.5 %} text-warning {% endif %}"">
+              <span class="font-weight-bold {% if round['team1_result'] > round['team2_result'] %} text-success {% elif round['team1_result'] < round['team2_result'] %} text-danger {% elif round['team1_result'] == round['team2_result'] %} text-warning {% endif %}"">
                   {% if round['team1_score']|string != 'nan' and round['team1_score']|string != 'None' %}
                   {{ round['team1_score'] }}
-                  {% elif round['team1_result'] == 1.0 %} W
-                  {% elif round['team1_result'] == 0.5 %} D
-                  {% elif round['team1_result'] == 0.0 %} L
+                  {% elif round['team1_result'] > round['team2_result'] %} W
+                  {% elif round['team1_result'] == round['team2_result'] %} D
+                  {% elif round['team1_result'] < round['team2_result'] %} L
                   {% else %} {% endif %}
                </span>
                   -
-              <span class="font-weight-bold {% if round['team2_result'] == 1.0 %} text-success {% elif round['team2_result'] == 0.0 %} text-danger {% elif round['team2_result'] == 0.5 %} text-warning {% endif %}"">
+              <span class="font-weight-bold {% if round['team2_result'] > round['team1_result'] %} text-success {% elif round['team2_result'] < round['team1_result'] %} text-danger {% elif round['team2_result'] == round['team1_result'] %} text-warning {% endif %}"">
                   {% if round['team2_score']|string != 'nan' and round['team2_score']|string != 'None' %}
                   {{ round['team2_score'] }}
-                  {% elif round['team2_result'] == 1.0 %} W
-                  {% elif round['team2_result'] == 0.5 %} D
-                  {% elif round['team2_result'] == 0.0 %} L
+                  {% elif round['team2_result'] > round['team1_result'] %} W
+                  {% elif round['team2_result'] == round['team1_result'] %} D
+                  {% elif round['team2_result'] < round['team1_result'] %} L
                   {% else %} {% endif %}
               </span>
               </td>
