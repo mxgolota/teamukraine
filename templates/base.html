@@ -51,11 +51,12 @@
 					<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Турніри</a>
 					<div class="dropdown-menu">
 
-						<a class="dropdown-item" href = "{{ url_for('tournaments_bp.ucc_tournament', tournament_id = 12) }}">UCC 2020: Rapid Div A <span class="text-danger font-weight-light">(NEW!)</span></a>
-						<a class="dropdown-item" href = "{{ url_for('tournaments_bp.ucc_tournament', tournament_id = 13) }}">UCC 2020: Rapid Div B <span class="text-danger font-weight-light">(NEW!)</span></a>
-						<a class="dropdown-item" href = "{{ url_for('tournaments_bp.ucc_tournament', tournament_id = 14) }}">UCC 2020: Rapid U1600 <span class="text-danger font-weight-light">(NEW!)</span></a>
+						<a class="dropdown-item" href = "{{ url_for('tournaments_bp.ucc_tournament', tournament_id = 12) }}">UCC 2020: Rapid Div A </a>
+						<a class="dropdown-item" href = "{{ url_for('tournaments_bp.ucc_tournament', tournament_id = 13) }}">UCC 2020: Rapid Div B </a>
+						<a class="dropdown-item" href = "{{ url_for('tournaments_bp.ucc_tournament', tournament_id = 14) }}">UCC 2020: Rapid U1600 </a>
 						<a class="dropdown-item" href = "{{ url_for('tournaments_bp.ucc2020_daily') }}">UCC 2020: Daily</a>
-						<a class="dropdown-item" href = "{{ url_for('tournaments_bp.lcwl_s6_main') }}">LCWL S6 (кращі гравці) </a>
+						<a class="dropdown-item" href = "{{ url_for('tournaments_bp.ucc_tournament', tournament_id = 11) }}">LCWL S6 (кращі гравці) </a>
+						<a class="dropdown-item" href = "{{ url_for('tournaments_bp.ucc_tournament', tournament_id = 15) }}">LCWL S6 U1600 (кращі гравці) <span class="text-danger font-weight-light">(NEW!)</span></a>
 						<a class="dropdown-item" href = "{{ url_for('tu_best_daily_players_dashboard') }}">Daily 2020 (кращі гравці)</a>
 						<!--<a class="dropdown-item" href = "{{ url_for('tournaments_bp.lcwl_main') }}">LCWL S4 (кращі гравці)</a>-->
                   		<!--<a class="dropdown-item" href = "{{ url_for('tournaments_bp.lcwl_u1600') }}">LCWL U1600 (кращі гравці)</a>-->
